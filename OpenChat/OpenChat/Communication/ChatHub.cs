@@ -6,26 +6,39 @@ using System.Threading.Tasks;
 using System.Web;
 using ChatDuzijCore.Repositories;
 using Microsoft.AspNet.SignalR;
+using OpenChat.Models;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace OpenChat.Communication
 {
+    [HubName("chat")]
     public class ChatHub : Hub
     {
         public UserRepository UserRepository { get; set; }
+        public ChatUser tempUser { get; set; }
 
         public override Task OnConnected()
         {
-            //if (!UserRepository.LoginUser(Context.User.Identity.Name, Context.QueryString["pass"]))
-            //    Clients.Caller.UILoginException();
-
-            Console.WriteLine($"{Context.User.Identity.Name} is connected!");
-
+            UserRepository = new UserRepository();
+            tempUser = new ChatUser() { Username = Context.QueryString["nick"] };
+            
             return base.OnConnected();
+        }
+
+        public void Login()
+        {
+            Clients.Caller.JoinLobby();
+            //UserRepository.AddUser(tempUser);
         }
 
         public override Task OnDisconnected(bool stopCalled)
         {
             return base.OnDisconnected(stopCalled);
+        }
+
+        public void Send(string message)
+        {
+            Clients.All.send(message);
         }
     }
 }

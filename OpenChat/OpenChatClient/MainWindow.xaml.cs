@@ -23,6 +23,18 @@ namespace OpenChatClient
         public MainWindow()
         {
             InitializeComponent();
+            //TODO rooms load
+        }
+
+        private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            //TODO join room and room data load to chat
+        }
+
+        private void sendbnn_Click(object sender, RoutedEventArgs e)
+        {
+
+            //TODO send to room
         }
     }
 }

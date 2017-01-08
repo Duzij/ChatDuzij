@@ -1,0 +1,100 @@
+﻿<Window x:Class="ChatDuzijWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatDuzijWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="500">
+    <Window.Resources>
+        <Style x:Key="CollapsedHeader" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed"></Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1">
+            <DataGrid Name="Contacts">
+            </DataGrid>
+        </Grid>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ListView BorderThickness="0" Margin="5" Name="ChatView" ItemsSource="{Binding Messages}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Style.Resources>
+                            <LinearGradientBrush x:Key="ListItemHoverFill" EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Color="Transparent" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Style.Resources>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border CornerRadius="0" SnapsToDevicePixels="True"  
+                                BorderThickness="{TemplateBinding BorderThickness}"   
+                                BorderBrush="{TemplateBinding BorderBrush}"   
+                                Background="{TemplateBinding Background}">
+                                        <Border Name="InnerBorder" CornerRadius="1" BorderThickness="0">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition MaxHeight="11" />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+
+                                                <Rectangle Name="UpperHighlight" Visibility="Collapsed" Fill="Transparent" />
+                                                <GridViewRowPresenter Grid.RowSpan="2"   
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"   
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </Grid>
+                                        </Border>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource ListItemHoverFill}" />
+                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                            <Setter TargetName="UpperHighlight" Property="Visibility" Value="Visible" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
+                        <GridView.Columns>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Username}" />
+                                            <TextBlock Text="{Binding Text}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="1" Margin="5 0 5 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Padding="5"></TextBox>
+                <Button Grid.Column="1" Padding="5" Content="SEND"></Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="LoginWindow" Height="300" Width="300">
     <Grid>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="272" />
+        <TextBox x:Name="nickTextBox" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" />
         <Button x:Name="button" Content="Login" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="272" Click="button_Click" Height="25" />
         <Label x:Name="label" Content="Hello, wellcome! Pick a nickname." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
     </Grid>

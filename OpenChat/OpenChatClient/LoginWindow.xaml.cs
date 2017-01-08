@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.AspNet.SignalR.Client;
+using System.Runtime.Remoting.Contexts;
+using System.Threading;
 
 namespace OpenChatClient
 {
@@ -32,14 +34,16 @@ namespace OpenChatClient
             //https://www.asp.net/signalr/overview/guide-to-the-api/hubs-api-guide-net-client
             //https://www.asp.net/signalr/overview/guide-to-the-api/hubs-api-guide-server#signalrurl
 
-            Connection = new HubConnection(@"http://localhost:11878/");
-            IHubProxy proxy = Connection.CreateHubProxy("login");
+            var connection = new HubConnection("http://localhost:11878/");
+            IHubProxy chat = connection.CreateHubProxy("Chat");
 
-            proxy.On("login", stock => Console.WriteLine("User connected"));
+            chat.On<string>("send", Console.WriteLine);
 
-            await Connection.Start();
+            await connection.Start();
 
-            proxy.Invoke("startChat").Wait();
+            await chat.Invoke("send", nickTextBox.Text);
+
+
         }
     }
 }
