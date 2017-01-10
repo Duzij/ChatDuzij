@@ -27,8 +27,6 @@ namespace OpenChat.Communication
 
         public void Login()
         {
-            Clients.Caller.JoinLobby();
-            //UserRepository.AddUser(tempUser);
         }
 
         public override Task OnDisconnected(bool stopCalled)
@@ -39,6 +37,8 @@ namespace OpenChat.Communication
         public void Send(string message)
         {
             Clients.All.send(message);
+            Clients.Caller.joinLobby();
+            UserRepository.AddUser(tempUser);
         }
     }
 }

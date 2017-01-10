@@ -39,11 +39,29 @@ namespace OpenChatClient
 
             chat.On<string>("send", Console.WriteLine);
 
+            chat.On("joinLobby", () =>
+            {
+                Thread t = new Thread(ShowMain);
+                t.SetApartmentState(ApartmentState.STA); //Set the thread to STA
+                t.Start();
+                t.Join();
+            });
+
             await connection.Start();
-
             await chat.Invoke("send", nickTextBox.Text);
-
-
         }
-    }
+
+        public void ShowMain()
+        {
+            MainWindow m = new MainWindow();
+        //    m.Dispatcher.BeginInvoke
+        //        (System.Windows.Threading.DispatcherPriority.Normal,
+        //(Action)(() =>
+        //{
+        //    m.ShowDialog();
+        //}
+        //        ));
+            m.ShowDialog();
+        }
+            }
 }
