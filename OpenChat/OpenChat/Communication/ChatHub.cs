@@ -25,8 +25,12 @@ namespace OpenChat.Communication
             return base.OnConnected();
         }
 
-        public void Login()
+        public bool Login(string username, string password)
         {
+            if (UserRepository.LoginUser(username, password))
+                return true;
+            else
+                return false;
         }
 
         public override Task OnDisconnected(bool stopCalled)

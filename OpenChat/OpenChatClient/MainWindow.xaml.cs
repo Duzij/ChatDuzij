@@ -21,39 +21,50 @@ namespace OpenChatClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ChatClientInitalizer chatInit { get; set; }
+        public bool LoginOverVisible = true;
+        public bool ErrorValidationLabelVisibility = false;
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
 
-        }
+             chatInit = new ChatClientInitalizer("http://localhost:11878/");
 
-        public async void InitalizeConnnection()
-        {
-
-            var connection = new HubConnection("http://localhost:11878/");
-            IHubProxy chat = connection.CreateHubProxy("Chat");
-
-            chat.On<string>("send", Console.WriteLine);
-
-            chat.On("send", () =>
-            {
-
+            var mychat = chatInit.connection;
+            var mychatProxy = chatInit.chat;
+            mychatProxy.On<bool>("login", (bool valid) => {
+                if (valid)
+                    this.LoginOverVisible = false;
+                else
+                    this.ErrorValidationLabelVisibility = true;
             });
-
-            await connection.Start();
-            await chat.Invoke("send", MessageTextBox.Text);
+            mychatProxy.On<string>("send", Console.WriteLine);
+            mychatProxy.On("send", () =>
+                {
+                    ChatView.Text += MessageTextBox.Text;
+                    MessageTextBox.Text = "";
+                });
+            mychat.Start();
         }
+
 
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //TODO join room and room data load to chat
         }
 
-        private void sendbnn_Click(object sender, RoutedEventArgs e)
+        private async void sendbnn_Click(object sender, RoutedEventArgs e)
         {
+            await chatInit.chat.Invoke("send", MessageTextBox.Text);
 
-        
+        }
 
+        private async void LoginBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.ErrorValidationLabelVisibility = false;
+            await chatInit.chat.Invoke("login", LoginTextBox.Text, PasswordTextBox.Text);
         }
     }
 }
