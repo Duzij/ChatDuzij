@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace OpenChatClient
 {
-    public class ChatClientInitalizer 
+    public class ChatClientInitalizer
     {
         internal HubConnection mychat;
-
-        public string Server { get; set; }
 
         public ChatClientInitalizer(string server)
         {
@@ -25,6 +23,10 @@ namespace OpenChatClient
             {
                 connection = new HubConnection(Server);
                 chat = connection.CreateHubProxy("Chat");
+
+                //client-side logging
+                connection.TraceLevel = TraceLevels.All;
+                connection.TraceWriter = Console.Out;
             }
             catch (NullReferenceException ex)
             {
@@ -32,6 +34,7 @@ namespace OpenChatClient
             }
         }
 
+        public string Server { get; set; }
         public HubConnection connection { get; set; }
         public IHubProxy chat { get; set; }
 
