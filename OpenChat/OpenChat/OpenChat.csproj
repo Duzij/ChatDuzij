@@ -234,6 +234,7 @@
     </Compile>
     <Compile Include="Models\ChatDbContext.cs" />
     <Compile Include="Models\ChatUser.cs" />
+    <Compile Include="Models\Conversation.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

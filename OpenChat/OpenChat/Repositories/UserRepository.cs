@@ -15,9 +15,9 @@ namespace ChatDuzijCore.Repositories
             return Context.Users.Find(id);
         }
 
-        public IEnumerable<ChatUser> FindAll()
+        public List<ChatUser> FindAll()
         {
-            return Context.Users;
+            return Context.Users.ToList();
         }
 
         public void AddUser(ChatUser u)
@@ -40,7 +40,7 @@ namespace ChatDuzijCore.Repositories
             this.Context.SaveChanges();
         }
 
-        public bool LoginUser(string username, string password)
+        public int LoginUser(string username, string password)
         {
             var users = this.FindAll().ToArray();
             for (int i = 0; i < users.Length; i++)
@@ -49,11 +49,17 @@ namespace ChatDuzijCore.Repositories
                 {
                     if (users[i].Password == password)
                     {
-                        return true;
+                        return users[i].ID;
                     }
                 }
             }
-            return false;
+            return 0;
+        }
+
+        public List<ChatUser> FindAllUserContacts(int id)
+        {
+            var user = this.FindById(id);
+            return FindAll().Except(new List<ChatUser>() { user }).ToList();
         }
     }
 }

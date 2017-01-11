@@ -70,7 +70,7 @@ namespace OpenChat.Repositories
             this.Context.SaveChanges();
         }
 
-        public IEnumerable<Room> FindAllUserRooms(int userId)
+        public List<Room> FindAllUserRooms(int userId)
         {
             return userRepository.FindById(userId).Rooms;
         }
