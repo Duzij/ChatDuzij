@@ -53,6 +53,7 @@ namespace OpenChatClient
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //TODO join room and room data load to chat
+            //Todo on double click data loads to chatTextBox (if hw choose from rooms)
         }
 
         private async void sendbnn_Click(object sender, RoutedEventArgs e)
