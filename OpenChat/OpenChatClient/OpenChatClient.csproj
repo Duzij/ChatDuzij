@@ -102,7 +102,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Conversation.cs" />
+    <Compile Include="Models\ChatDbContext.cs" />
+    <Compile Include="Models\ChatUser.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\RoomDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -132,6 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\new-messages-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\new-messages-icon-small.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

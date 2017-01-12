@@ -27,7 +27,6 @@ namespace OpenChat.Communication
         //on send button we Invoke("SendToRoom", roomID);
         //here on server we save this messages in Room object
         
-            //HOW THE FUCK IS DAT WORKING?
 
         public UserRepository UserRepository { get; set; }
         public RoomRepository RoomRepository { get; set; }
@@ -35,10 +34,12 @@ namespace OpenChat.Communication
 
         public override Task OnConnected()
         {
-            UserRepository = new UserRepository();
-            _tempUser = new ChatUser() { Username = Context.QueryString["nick"] };
-
             return base.OnConnected();
+        }
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            return base.OnDisconnected(stopCalled);
         }
 
         public void JoinGroup(string groupName)
@@ -46,21 +47,25 @@ namespace OpenChat.Communication
             Groups.Add(Context.ConnectionId, groupName);
         }
 
+        public void SendMessagToGroup(int RoomId, string message)
+        {
+            var room = RoomRepository.FindById(RoomId);
+            RoomRepository.WriteMessage(message, _tempUser, room);
+        }
+
         public void Login(string username, string password)
         {
             var id = UserRepository.LoginUser(username, password);
             if (id != 0)
             {
+                this._tempUser = UserRepository.FindById(id);
                 this.LoadUserRooms(id);
-                this.LoadUserContacts(id);
             }
             else
+            {
+                _tempUser = new ChatUser() { Username = Context.QueryString["nick"] };
                 UserRepository.AddUser(_tempUser);
-        }
-
-        public override Task OnDisconnected(bool stopCalled)
-        {
-            return base.OnDisconnected(stopCalled);
+            }
         }
 
         public void Send(string message)
@@ -70,19 +75,12 @@ namespace OpenChat.Communication
             UserRepository.AddUser(_tempUser);
         }
 
-        public List<Conversation> LoadUserRooms(int id)
+        public List<RoomDTO> LoadUserRooms(int id)
         {
-            return RoomRepository.FindAllUserRooms(id).ConvertAll(a => (Conversation)a);
-        }
-
-        public List<Conversation> LoadUserContacts(int id)
-        {
-            return UserRepository.FindAllUserContacts(id).ConvertAll(a => (Conversation)a);
-        }
-
-        public List<Message> LoadRoom(int roomId)
-        {
-            return RoomRepository.FindById(roomId).Messages;
+            var list = new List<RoomDTO>() { new RoomDTO() { Type = RoomType.Public } };
+            list.AddRange(UserRepository.FindAllUserContacts(id).ConvertAll(a => (RoomDTO)a));
+            list.AddRange(RoomRepository.FindAllUserRooms(id).ConvertAll(a => (RoomDTO)a));
+            return list;
         }
     }
 }

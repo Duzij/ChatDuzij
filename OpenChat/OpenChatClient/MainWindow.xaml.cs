@@ -15,12 +15,10 @@ using System.Windows.Navigation;
 using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Shapes;
 using OpenChatClient.Model;
+using System.Collections.ObjectModel;
 
 namespace OpenChatClient
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private bool loginOverVisible;
@@ -28,15 +26,16 @@ namespace OpenChatClient
 
         public MainWindow()
         {
+            DataContext = this;
             InitializeComponent();
-
-            this.Users.AddRange(
-                new List<Conversation>()
+            data = new ObservableCollection<RoomDTO>()
                 {
-                    new Conversation() { GotNewMessages = true, RoomName = "Vole"},
-                    new Conversation() { GotNewMessages = false, RoomName = "SUka, tohle je proste nejdelsí"},
-                    new Conversation() { GotNewMessages = true, RoomName = "Jetpacks room"}
-                });
+                    new RoomDTO() {Type=OpenChat.Models.RoomType.Group, GotNewMessages = true, RoomName = "Vole"},
+                    new RoomDTO() { Type=OpenChat.Models.RoomType.Private, GotNewMessages = false, RoomName = "SUka, tohle je proste nejdelsí"},
+                    new RoomDTO() { Type = OpenChat.Models.RoomType.Public, GotNewMessages = true, RoomName = "Jetpacks room"}
+                };
+
+            Contacts.ItemsSource = data;
 
             chatInit = new ChatClientInitalizer("http://localhost:11878/");
 
@@ -75,7 +74,17 @@ namespace OpenChatClient
 
         public ChatClientInitalizer chatInit { get; set; }
 
-        public List<Conversation> Users { get; set; }
+        ObservableCollection<RoomDTO> data = new ObservableCollection<RoomDTO>();
+
+        public ObservableCollection<RoomDTO> Data
+        {
+            get
+            {
+                return data;
+            }
+        }
+
+
 
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
