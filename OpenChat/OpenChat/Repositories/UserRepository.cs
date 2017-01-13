@@ -8,11 +8,11 @@ namespace ChatDuzijCore.Repositories
 {
     public class UserRepository
     {
-        public ChatDbContext Context { get; set; }
+        public ChatDbContext Context = new ChatDbContext();
 
         public ChatUser FindById(int id)
         {
-            return Context.Users.Find(id);
+            return Context.Users.Single(a => a.ID == id);
         }
 
         public List<ChatUser> FindAll()
@@ -56,7 +56,7 @@ namespace ChatDuzijCore.Repositories
             return 0;
         }
 
-        public List<ChatUser> FindAllUserContacts(int id)
+        public List<ChatUser> FindAllUserPrivateContacts(int id)
         {
             var user = this.FindById(id);
             return FindAll().Except(new List<ChatUser>() { user }).ToList();

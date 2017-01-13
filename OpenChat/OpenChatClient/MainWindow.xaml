@@ -20,7 +20,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid Visibility="{Binding Path=ErrorValidationLabelVisibility, Converter={StaticResource BoolToVis}}" Panel.ZIndex="100" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" x:Name="login">
+        <Grid  Panel.ZIndex="100" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" x:Name="login">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -44,7 +44,7 @@
 
             <Button x:Name="LoginBtn" Grid.Column="1" Margin="0 5 0 0" Grid.Row="5" Content="LOGIN" Click="LoginBtn_Click" />
 
-            <Label x:Name="ErorValidatoin" Visibility="{Binding ErrorValidationLabelVisibility}" Content="Incorrect username or password" Grid.Row="6" Grid.Column="1" />
+            <Label x:Name="ErorValidatoin" Visibility="Hidden" Content="Incorrect username or password" Grid.Row="6" Grid.Column="1" />
         </Grid>
 
         <Grid Grid.Column="1">
@@ -106,7 +106,7 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Height="20" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
                                             <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" Source="Content/new-messages-icon-small.png"></Image>
                                         </StackPanel>
                                     </DataTemplate>
@@ -115,8 +115,7 @@
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
-            </ListView> 
-
+            </ListView>
         </Grid>
 
         <Grid Grid.Column="0">

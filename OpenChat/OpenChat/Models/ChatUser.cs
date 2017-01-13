@@ -9,9 +9,19 @@ namespace OpenChat.Models
 {
     public class ChatUser
     {
+        public ChatUser(string username, string password)
+        {
+            this.Username = username;
+            this.Password = password;
+        }
+
+        public ChatUser()
+        {
+        }
+
+        public virtual List<Room> Rooms { get; } = new List<Room>();
         public int ID { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public List<Room> Rooms { get; set; }
     }
 }

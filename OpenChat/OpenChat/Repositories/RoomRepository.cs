@@ -9,14 +9,7 @@ namespace OpenChat.Repositories
 {
     public class RoomRepository
     {
-        private UserRepository userRepository;
-
-        public RoomRepository(UserRepository userRepository)
-        {
-            this.userRepository = userRepository;
-        }
-
-        public ChatDbContext Context { get; set; }
+        public ChatDbContext Context = new ChatDbContext();
 
         public Room FindById(int id)
         {
@@ -65,14 +58,14 @@ namespace OpenChat.Repositories
 
         public void JoinRoom(int userId, int roomId)
         {
-            var user = userRepository.FindById(userId);
+            var user = Context.Users.Find(userId);
             this.FindById(roomId).Users.Add(user);
             this.Context.SaveChanges();
         }
 
         public List<Room> FindAllUserRooms(int userId)
         {
-            return userRepository.FindById(userId).Rooms;
+            return Context.Users.Find(userId).Rooms;
         }
     }
 }

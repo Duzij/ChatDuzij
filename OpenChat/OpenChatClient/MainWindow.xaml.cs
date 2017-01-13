@@ -16,6 +16,7 @@ using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Shapes;
 using OpenChatClient.Model;
 using System.Collections.ObjectModel;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace OpenChatClient
 {
@@ -24,32 +25,32 @@ namespace OpenChatClient
         private bool loginOverVisible;
         private bool errorValidationLabelVisibility;
 
+        private List<RoomDTO> data = new List<RoomDTO>();
+        private int userId;
+
         public MainWindow()
         {
             DataContext = this;
             InitializeComponent();
-            data = new ObservableCollection<RoomDTO>()
-                {
-                    new RoomDTO() {Type=OpenChat.Models.RoomType.Group, GotNewMessages = true, RoomName = "Vole"},
-                    new RoomDTO() { Type=OpenChat.Models.RoomType.Private, GotNewMessages = false, RoomName = "SUka, tohle je proste nejdelsí"},
-                    new RoomDTO() { Type = OpenChat.Models.RoomType.Public, GotNewMessages = true, RoomName = "Jetpacks room"}
-                };
 
-            Contacts.ItemsSource = data;
+            var connection = new HubConnection("http://localhost:11878/");
+            connection.Closed += Connection_Closed;
+            HubProxy = connection.CreateHubProxy("chat");
 
-            chatInit = new ChatClientInitalizer("http://localhost:11878/");
+            connection.TraceLevel = TraceLevels.All;
+            connection.TraceWriter = Console.Out;
 
-            var mychat = chatInit.connection;
-            var mychatProxy = chatInit.chat;
-            mychatProxy.On<bool>("login", (bool valid) =>
+            HubProxy.On<int>("LoginUser", (valid) =>
             {
-                if (valid)
-                    this.LoginOverVisible = false;
-                else
-                    this.ErrorValidationLabelVisibility = true;
+                Dispatcher.InvokeAsync(() =>
+                {
+                    this.LoginVisability(valid);
+                });
             });
-            mychatProxy.On<string>("send", Console.WriteLine);
-            mychatProxy.On("send", () =>
+
+            connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
+
+            HubProxy.On("send", () =>
             {
                 Dispatcher.InvokeAsync(() =>
                     {
@@ -57,8 +58,13 @@ namespace OpenChatClient
                         MessageTextBox.Text = "";
                     });
             });
-            mychat.Start();
+
+            connection.Start();
         }
+
+        public IHubProxy HubProxy { get; set; }
+
+        public HubConnection Connection { get; set; }
 
         public bool ErrorValidationLabelVisibility
         {
@@ -74,9 +80,7 @@ namespace OpenChatClient
 
         public ChatClientInitalizer chatInit { get; set; }
 
-        ObservableCollection<RoomDTO> data = new ObservableCollection<RoomDTO>();
-
-        public ObservableCollection<RoomDTO> Data
+        public List<RoomDTO> Data
         {
             get
             {
@@ -84,7 +88,10 @@ namespace OpenChatClient
             }
         }
 
-
+        private void Connection_Closed()
+        {
+            this.Connection.Dispose();
+        }
 
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -92,15 +99,43 @@ namespace OpenChatClient
             //Todo on double click data loads to chatTextBox (if hw choose from rooms)
         }
 
-        private async void sendbnn_Click(object sender, RoutedEventArgs e)
+        private void sendbnn_Click(object sender, RoutedEventArgs e)
         {
-            await chatInit.chat.Invoke("send", MessageTextBox.Text);
+            try
+            {
+                HubProxy.Invoke("send", MessageTextBox.Text);
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        private async void LoginBtn_Click(object sender, RoutedEventArgs e)
+        private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.ErrorValidationLabelVisibility = false;
-            await chatInit.chat.Invoke("login", LoginTextBox.Text, PasswordTextBox.Text);
+            try
+            {
+                HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Text);
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void LoginVisability(int userId)
+        {
+            if (userId != 0)
+            {
+                this.ErorValidatoin.Visibility = Visibility.Hidden;
+                this.login.Visibility = Visibility.Hidden;
+                data = HubProxy.Invoke<List<RoomDTO>>("LoadUserRooms", userId).Result;
+            }
+            else
+            {
+                this.ErorValidatoin.Visibility = Visibility.Visible;
+                this.login.Visibility = Visibility.Visible;
+            }
         }
     }
 }
