@@ -19,12 +19,11 @@ namespace OpenChat.Controllers
         {
             ViewBag.Title = "Home Page";
 
-            var user = UserRepository.FindById(this.UserRepository.LoginUser("Admin", "123"));
-            var room = new Room("Room", RoomType.Group);
+            //var user = UserRepository.FindById(this.UserRepository.LoginUser("Admin", "123"));
 
-            RoomRepository.AddRoom(room);
-
-            RoomRepository.JoinRoom(user.ID, room.ID);
+            //var room = new Room("Room", RoomType.Group);
+            //RoomRepository.AddRoom(room);
+            //RoomRepository.JoinRoom(user.ID, room.ID);
 
             //var list = new List<RoomDTO>() { new RoomDTO() { RoomName = "Public Room", Type = RoomType.Public } };
             //list.AddRange(UserRepository.FindAllUserPrivateContacts(user.ID).ConvertAll(a => (RoomDTO)a));

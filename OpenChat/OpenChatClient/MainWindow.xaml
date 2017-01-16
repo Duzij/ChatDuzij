@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenChatClient"
-        xmlns:server="clr-namespace:OpenChat;assembly=OpenChat"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
@@ -54,7 +53,7 @@
             </Grid.RowDefinitions>
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
-            <ListView Margin="2" ItemsSource="{Binding Data}" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
+            <ListView Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
                 <!--<ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Resources>

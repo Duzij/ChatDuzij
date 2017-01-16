@@ -22,10 +22,7 @@ namespace OpenChatClient
 {
     public partial class MainWindow : Window
     {
-        private bool loginOverVisible;
-        private bool errorValidationLabelVisibility;
-
-        private List<RoomDTO> data = new List<RoomDTO>();
+        public List<RoomDTO> data = new List<RoomDTO>();
         private int userId;
 
         public MainWindow()
@@ -40,7 +37,7 @@ namespace OpenChatClient
             connection.TraceLevel = TraceLevels.All;
             connection.TraceWriter = Console.Out;
 
-            HubProxy.On<int>("LoginUser", (valid) =>
+            HubProxy.On<int>("Login", (valid) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
@@ -49,6 +46,14 @@ namespace OpenChatClient
             });
 
             connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
+
+            HubProxy.On<List<RoomDTO>>("LoadUserRooms", (data) =>
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    this.data = data;
+                });
+            });
 
             HubProxy.On("send", () =>
             {
@@ -66,27 +71,7 @@ namespace OpenChatClient
 
         public HubConnection Connection { get; set; }
 
-        public bool ErrorValidationLabelVisibility
-        {
-            get { return errorValidationLabelVisibility; }
-            set { errorValidationLabelVisibility = value; }
-        }
-
-        public bool LoginOverVisible
-        {
-            get { return loginOverVisible; }
-            set { loginOverVisible = value; }
-        }
-
         public ChatClientInitalizer chatInit { get; set; }
-
-        public List<RoomDTO> Data
-        {
-            get
-            {
-                return data;
-            }
-        }
 
         private void Connection_Closed()
         {
@@ -97,6 +82,8 @@ namespace OpenChatClient
         {
             //TODO join room and room data load to chat
             //Todo on double click data loads to chatTextBox (if hw choose from rooms)
+            RoomDTO room = (RoomDTO)Contacts.SelectedItem;
+            HubProxy.Invoke("JoinGroup", this.userId, room.RoomId);
         }
 
         private void sendbnn_Click(object sender, RoutedEventArgs e)
@@ -123,13 +110,14 @@ namespace OpenChatClient
             }
         }
 
-        private void LoginVisability(int userId)
+        private void LoginVisability(int Id)
         {
-            if (userId != 0)
+            this.userId = Id;
+            if (Id != 0)
             {
                 this.ErorValidatoin.Visibility = Visibility.Hidden;
                 this.login.Visibility = Visibility.Hidden;
-                data = HubProxy.Invoke<List<RoomDTO>>("LoadUserRooms", userId).Result;
+                Contacts.ItemsSource = HubProxy.Invoke<List<RoomDTO>>("LoadUserRooms", userId).Result;
             }
             else
             {

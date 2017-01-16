@@ -41,9 +41,16 @@ namespace OpenChat.Communication
             return base.OnDisconnected(stopCalled);
         }
 
-        public void JoinGroup(string groupName)
+        public void CreatePrivateRoom(string roomName)
         {
-            Groups.Add(Context.ConnectionId, groupName);
+            var room = new Room(roomName, RoomType.Private);
+            RoomRepository.AddRoom(room);
+            RoomRepository.JoinRoom(_tempUser.ID, room.ID);
+        }
+
+        public void JoinGroup(int userID, int roomID)
+        {
+            RoomRepository.JoinRoom(userID, roomID);
         }
 
         public void SendMessagToGroup(int RoomId, string message)
@@ -65,13 +72,8 @@ namespace OpenChat.Communication
             if (id != 0)
             {
                 this._tempUser = UserRepository.FindById(id);
-                //this.LoadUserRooms(id);
-                Clients.Caller.Login(true);
             }
-            else
-            {
-                Clients.Caller.Login(false);
-            }
+            Clients.Caller.Login(id);
         }
 
         public void Register(string username, string password)
