@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -7,17 +8,20 @@ namespace OpenChat.Models
 {
     public class Room
     {
-        public string RoomName { get; set; }
-        public RoomType Type { get; set; }
-        public List<ChatUser> Users { get; set; }
-        public int ID { get; set; }
-        public List<Message> Messages { get; set; }
-    }
+        public Room(string roomName)
+        {
+            this.RoomName = roomName;
+        }
 
-    public enum RoomType
-    {
-        Private,
-        Public,
-        Group
-    };
+        public Room()
+        {
+        }
+
+        public virtual List<Message> Messages { get; } = new List<Message>();
+
+        [Key]
+        public string RoomName { get; set; }
+
+        public virtual List<User> Users { get; } = new List<User>();
+    }
 }

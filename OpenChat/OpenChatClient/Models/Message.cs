@@ -18,13 +18,7 @@ namespace OpenChat.Models
         public int ID { get; set; }
         public string Text { get; set; }
         public double Timestamp { get; set; }
-        public int AuthorID { get; set; }
-        public int RoomID { get; set; }
-
-        [ForeignKey("AuthorID")]
-        public ChatUser Author { get; set; }
-
-        [ForeignKey("RoomID")]
-        public Room Room { get; set; }
+        public string Author { get; set; }
+        public string Room { get; set; }
     }
 }

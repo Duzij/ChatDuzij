@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
 namespace OpenChat.Models
 {
-    public enum RoomType
-    {
-        Private,
-        Public,
-        Group
-    };
-
     public class Room
     {
-        public Room(string roomName, RoomType type)
+        public Room(string roomName)
         {
             this.RoomName = roomName;
-            this.Type = type;
         }
 
         public Room()
@@ -25,10 +18,10 @@ namespace OpenChat.Models
         }
 
         public virtual List<Message> Messages { get; } = new List<Message>();
-        public string RoomName { get; set; }
-        public RoomType Type { get; set; }
 
-        public virtual List<ChatUser> Users { get; } = new List<ChatUser>();
-        public int ID { get; set; }
+        [Key]
+        public string RoomName { get; set; }
+
+        public virtual List<User> Users { get; } = new List<User>();
     }
 }

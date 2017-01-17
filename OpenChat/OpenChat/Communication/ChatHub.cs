@@ -9,27 +9,21 @@ using Microsoft.AspNet.SignalR;
 using OpenChat.Models;
 using Microsoft.AspNet.SignalR.Hubs;
 using OpenChat.Repositories;
-using OpenChatClient.Model;
 
 namespace OpenChat.Communication
 {
     [HubName("chat")]
     public class ChatHub : Hub
     {
-        //todo method, which loads last messages by room id
-        //todo method, which get last message from Room by roomID and lastMsgID (to do not send the whole msg pack at once)
-        //
-        //todo method, which creates private user room, if it waas not created earlier (nameConvence => userID + opponentID)
-        //
-        //user double clicks on contats section => if (roomRepo.Find(userID+opponentID) = null =>
-        //it creates a private room => CreatePrivateRoom(int userID, int opponentID); => ID of this room is sended to client;
-        //Enable chat textBox on client
-        //on send button we Invoke("SendToRoom", roomID);
-        //here on server we save this messages in Room object
-
         public UserRepository UserRepository = new UserRepository();
         public RoomRepository RoomRepository = new RoomRepository();
-        private ChatUser _tempUser { get; set; }
+
+        public ChatHub()
+        {
+            ConnectedUsers = new Dictionary<string, string>();
+        }
+
+        public Dictionary<string, string> ConnectedUsers { get; set; }
 
         public override Task OnConnected()
         {
@@ -41,46 +35,40 @@ namespace OpenChat.Communication
             return base.OnDisconnected(stopCalled);
         }
 
-        public void CreatePrivateRoom(string roomName)
+        public async Task JoinRoom(Room room)
         {
-            var room = new Room(roomName, RoomType.Private);
+            await Groups.Add(Context.ConnectionId, room.RoomName);
             RoomRepository.AddRoom(room);
-            RoomRepository.JoinRoom(_tempUser.ID, room.ID);
+
+            Clients.Group(room.RoomName).addChatMessage(Context.User.Identity.Name + " joined.");
         }
 
-        public void JoinGroup(int userID, int roomID)
+        public void SendMessageToGroup(string RoomName, string message)
         {
-            RoomRepository.JoinRoom(userID, roomID);
-        }
-
-        public void SendMessagToGroup(int RoomId, string message)
-        {
-            var room = RoomRepository.FindById(RoomId);
-            RoomRepository.WriteMessage(message, _tempUser, room);
-        }
-
-        public int GetUserId()
-        {
-            if (_tempUser != null)
-                return _tempUser.ID;
-            return 0;
+            var room = RoomRepository.Find(RoomName);
+            string user = this.ConnectedUsers[Context.ConnectionId];
+            RoomRepository.WriteMessage(message, user, RoomName);
         }
 
         public void Login(string username, string password)
         {
-            var id = UserRepository.LoginUser(username, password);
-            if (id != 0)
+            if (!ConnectedUsers.ContainsKey(Context.ConnectionId))
             {
-                this._tempUser = UserRepository.FindById(id);
+                if (UserRepository.LoginUser(username, password) == "404") return;
+                ConnectedUsers.Add(Context.ConnectionId, username);
+                Clients.Caller.Login(true);
             }
-            Clients.Caller.Login(id);
+            else
+            {
+                Clients.Caller.Login(false);
+            }
         }
 
         public void Register(string username, string password)
         {
             if (username != null || password != null)
             {
-                this.UserRepository.AddUser(new ChatUser(username, password));
+                this.UserRepository.AddUser(new User(username, password));
                 Clients.Caller.Registered(true);
             }
             else
@@ -89,17 +77,14 @@ namespace OpenChat.Communication
             }
         }
 
-        public void Send(string message)
+        public void PublicSend(string message)
         {
             Clients.All.send(message);
         }
 
-        public List<RoomDTO> LoadUserRooms(int id)
+        public List<Room> LoadUserRooms(string username)
         {
-            var list = new List<RoomDTO>() { new RoomDTO() { RoomName = "Public Room", Type = RoomType.Public } };
-            list.AddRange(UserRepository.FindAllUserPrivateContacts(id).ConvertAll(a => (RoomDTO)a));
-            list.AddRange(RoomRepository.FindAllUserRooms(id).ConvertAll(a => (RoomDTO)a));
-            return list;
+            return RoomRepository.FindAllUserRooms(username);
         }
     }
 }

@@ -119,10 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ChatDbContext.cs" />
-    <Compile Include="Models\ChatUser.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Room.cs" />
-    <Compile Include="Models\RoomDTO.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

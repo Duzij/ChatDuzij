@@ -241,14 +241,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201701131435273_InitialCreate.cs" />
-    <Compile Include="Migrations\201701131435273_InitialCreate.Designer.cs">
-      <DependentUpon>201701131435273_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201701172000310_InitialCreate.cs" />
+    <Compile Include="Migrations\201701172000310_InitialCreate.Designer.cs">
+      <DependentUpon>201701172000310_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChatDbContext.cs" />
-    <Compile Include="Models\ChatUser.cs" />
-    <Compile Include="Models\RoomDTO.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -326,8 +325,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201701131435273_InitialCreate.resx">
-      <DependentUpon>201701131435273_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201701172000310_InitialCreate.resx">
+      <DependentUpon>201701172000310_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

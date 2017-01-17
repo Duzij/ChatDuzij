@@ -13,7 +13,7 @@ namespace OpenChat.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201701131435273_InitialCreate"; }
+            get { return "201701172000310_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

@@ -11,14 +11,14 @@ namespace OpenChat.Repositories
     {
         public ChatDbContext Context = new ChatDbContext();
 
-        public Room FindById(int id)
+        public Room Find(string name)
         {
-            return Context.Rooms.Find(id);
+            return Context.Rooms.Find(name);
         }
 
-        public IEnumerable<Room> FindAll()
+        public List<Room> FindAll()
         {
-            return Context.Rooms;
+            return Context.Rooms.ToList();
         }
 
         public void AddRoom(Room u)
@@ -27,45 +27,35 @@ namespace OpenChat.Repositories
             this.Context.SaveChanges();
         }
 
-        public void DeleteRoom(int roomId)
+        public void DeleteRoom(string name)
         {
-            var room = this.FindById(roomId);
+            var room = this.Find(name);
             this.Context.Rooms.Remove(room);
             this.Context.SaveChanges();
         }
 
-        public void EditRoom(Room u)
+        public List<Message> GetAllMessages(string name)
         {
-            var user = this.FindById(u.ID);
-            this.Context.Rooms.Remove(user);
-            this.Context.Rooms.Add(u);
+            return Context.Rooms.Find(name).Messages;
+        }
+
+        public void WriteMessage(string message, string authorName, string roomName)
+        {
+            var msg = new Message() { Author = authorName, Room = authorName, Text = message };
+            Context.Rooms.Find(roomName).Messages.Add(msg);
             this.Context.SaveChanges();
         }
 
-        public List<Message> GetAllMessagesById(int roomId)
+        public void JoinRoom(string authorName, string roomName)
         {
-            var currentRoom = this.FindById(roomId);
-            return Context.Rooms.Find(currentRoom).Messages;
-        }
-
-        public void WriteMessage(string message, ChatUser author, Room room)
-        {
-            var msg = new Message() { Author = author, Room = room, Text = message };
-            var currentRoom = this.FindById(room.ID);
-            Context.Rooms.Find(currentRoom).Messages.Add(msg);
+            var user = Context.Users.Find(authorName);
+            Context.Rooms.Find(roomName).Users.Add(user);
             this.Context.SaveChanges();
         }
 
-        public void JoinRoom(int userId, int roomId)
+        public List<Room> FindAllUserRooms(string name)
         {
-            var user = Context.Users.Find(userId);
-            this.FindById(roomId).Users.Add(user);
-            this.Context.SaveChanges();
-        }
-
-        public List<Room> FindAllUserRooms(int userId)
-        {
-            return Context.Users.Find(userId).Rooms;
+            return Context.Users.Find(name).Rooms;
         }
     }
 }

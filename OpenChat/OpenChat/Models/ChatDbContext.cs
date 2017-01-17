@@ -16,7 +16,7 @@ namespace OpenChat.Models
             Database.SetInitializer(new DropCreateDatabaseAlways<DbContext>());
         }
 
-        public DbSet<ChatUser> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Room> Rooms { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

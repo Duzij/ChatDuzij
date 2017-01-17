@@ -10,37 +10,29 @@ namespace ChatDuzijCore.Repositories
     {
         public ChatDbContext Context = new ChatDbContext();
 
-        public ChatUser FindById(int id)
+        public Room Find(string name)
         {
-            return Context.Users.Single(a => a.ID == id);
+            return Context.Rooms.Find(name);
         }
 
-        public List<ChatUser> FindAll()
+        public List<User> FindAll()
         {
             return Context.Users.ToList();
         }
 
-        public void AddUser(ChatUser u)
+        public void AddUser(User u)
         {
             this.Context.Users.Add(u);
             this.Context.SaveChanges();
         }
 
-        public void DeleteUser(ChatUser u)
+        public void DeleteUser(User u)
         {
             this.Context.Users.Remove(u);
             this.Context.SaveChanges();
         }
 
-        public void EditUser(ChatUser u)
-        {
-            var user = this.FindById(u.ID);
-            this.Context.Users.Remove(user);
-            this.Context.Users.Add(u);
-            this.Context.SaveChanges();
-        }
-
-        public int LoginUser(string username, string password)
+        public string LoginUser(string username, string password)
         {
             var users = this.FindAll().ToArray();
             for (int i = 0; i < users.Length; i++)
@@ -49,17 +41,11 @@ namespace ChatDuzijCore.Repositories
                 {
                     if (users[i].Password == password)
                     {
-                        return users[i].ID;
+                        return username;
                     }
                 }
             }
-            return 0;
-        }
-
-        public List<ChatUser> FindAllUserPrivateContacts(int id)
-        {
-            var user = this.FindById(id);
-            return FindAll().Except(new List<ChatUser>() { user }).ToList();
+            return "404";
         }
     }
 }

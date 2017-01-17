@@ -54,7 +54,32 @@
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
             <ListView Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
-                <!--<ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
+                        <GridView.Columns>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Height="20" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
+                                            <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Content/new-messages-icon-small.png"></Image>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ListView ItemsSource="{Binding chatMessages}"  BorderThickness="0" Margin="5" x:Name="ChatView">
+                <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Resources>
                             <LinearGradientBrush x:Key="ListItemHoverFill" EndPoint="0,1" StartPoint="0,0">
@@ -97,33 +122,8 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </ListView.ItemContainerStyle>-->
-                <ListView.View>
-                    <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
-                        <GridView.Columns>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Height="20" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
-                                            <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" Source="Content/new-messages-icon-small.png"></Image>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView.Columns>
-                    </GridView>
-                </ListView.View>
+                </ListView.ItemContainerStyle>
             </ListView>
-        </Grid>
-
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="8*"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBox BorderThickness="0" Margin="5" Name="ChatView">
-            </TextBox>
             <Grid Grid.Row="1" Margin="5 0 5 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="7*"></ColumnDefinition>
