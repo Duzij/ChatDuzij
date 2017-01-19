@@ -12,18 +12,12 @@ namespace OpenChat.Controllers
 {
     public class HomeController : Controller
     {
-        public ChatHub ChatHub = new ChatHub();
+        public RoomRepository repo = new RoomRepository();
 
         public ActionResult Index()
         {
+            repo.WriteMessage("hello", "Admin", "Room123");
             ViewBag.Title = "Home Page";
-
-            ChatHub.Login("Admin", "123");
-
-            //var room = new Room("Room", RoomType.Group);
-            //RoomRepository.AddRoom(room);
-            //RoomRepository.JoinRoom(user.ID, room.ID);
-
             return View();
         }
     }

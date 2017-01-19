@@ -19,7 +19,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid  Panel.ZIndex="100" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" x:Name="login">
+        <Grid Panel.ZIndex="100" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" x:Name="login">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -123,6 +123,21 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
+                        <GridView.Columns>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Height="20" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Text}" Margin="0 4 10 4" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
             </ListView>
             <Grid Grid.Row="1" Margin="5 0 5 5">
                 <Grid.ColumnDefinitions>

@@ -42,8 +42,14 @@ namespace OpenChat.Repositories
         public void WriteMessage(string message, string authorName, string roomName)
         {
             var msg = new Message() { Author = authorName, Room = authorName, Text = message };
-            Context.Rooms.Find(roomName).Messages.Add(msg);
+            var room = Context.Rooms.Where(a => a.RoomName == roomName).First();
+            room.Messages.Add(msg);
             this.Context.SaveChanges();
+        }
+
+        public void NotifyUsersInGroup(string authorName, string roomName)
+        {
+
         }
 
         public void JoinRoom(string authorName, string roomName)

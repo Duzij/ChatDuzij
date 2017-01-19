@@ -17,14 +17,16 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using Microsoft.AspNet.SignalR.Hubs;
 using OpenChat.Models;
+using OpenChatClient.Model;
 
 namespace OpenChatClient
 {
     public partial class MainWindow : Window
     {
-        public List<Room> data = new List<Room>();
+        public ObservableCollection<RoomDTO> data = new ObservableCollection<RoomDTO>();
         public List<Message> chatMessages = new List<Message>();
         private string username;
+        private string roomName;
 
         public MainWindow()
         {
@@ -38,7 +40,7 @@ namespace OpenChatClient
             connection.TraceLevel = TraceLevels.All;
             connection.TraceWriter = Console.Out;
 
-            HubProxy.On<string>("Login", (valid) =>
+            HubProxy.On<bool>("Login", (valid) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
@@ -48,21 +50,31 @@ namespace OpenChatClient
 
             connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
 
-            HubProxy.On<List<Room>>("LoadUserRooms", (data) =>
+            HubProxy.On<List<RoomDTO>>("LoadUserRooms", (data) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    this.data = data;
+                    this.data = new ObservableCollection<RoomDTO>(data);
                 });
             });
 
-            HubProxy.On("send", () =>
+            HubProxy.On("SendToGroup", () =>
             {
                 Dispatcher.InvokeAsync(() =>
                     {
                         chatMessages.Add(new Message() { Text = MessageTextBox.Text, Author = username, Room = SelectedRoom.RoomName });
                         MessageTextBox.Text = "";
                     });
+            });
+
+            HubProxy.On<string>("Notify", (string RoomName) =>
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    data.FirstOrDefault(a => a.RoomName == RoomName).GotNewMessages = true;
+                    if (SelectedRoom.RoomName == RoomName)
+                        chatMessages = HubProxy.Invoke<List<Message>>("LoadGroupData", username, SelectedRoom.RoomName).Result;
+                });
             });
 
             connection.Start();
@@ -82,17 +94,16 @@ namespace OpenChatClient
 
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //TODO join room and room data load to chat
-            //Todo on double click data loads to chatTextBox (if hw choose from rooms)
             SelectedRoom = (Room)Contacts.SelectedItem;
-            chatMessages = HubProxy.Invoke<List<Message>>("JoinGroup", username, SelectedRoom.RoomName).Result;
+            chatMessages = HubProxy.Invoke<List<Message>>("LoadGroupData", username, SelectedRoom.RoomName).Result;
         }
 
         private void sendbnn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                HubProxy.Invoke("SendMessageToGroup", MessageTextBox.Text);
+                SelectedRoom = (Room)Contacts.SelectedItem;
+                HubProxy.Invoke("SendMessageToGroup", SelectedRoom.RoomName, MessageTextBox.Text);
             }
             catch (NullReferenceException ex)
             {
@@ -100,11 +111,11 @@ namespace OpenChatClient
             }
         }
 
-        private void LoginBtn_Click(object sender, RoutedEventArgs e)
+        private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Text);
+                await HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Text);
             }
             catch (NullReferenceException ex)
             {
@@ -112,13 +123,16 @@ namespace OpenChatClient
             }
         }
 
-        private void LoginVisability(string username)
+        private async void LoginVisability(bool valid)
         {
-            if (username != "404")
+            if (valid)
             {
+                this.username = LoginTextBox.Text;
                 this.ErorValidatoin.Visibility = Visibility.Hidden;
                 this.login.Visibility = Visibility.Hidden;
-                Contacts.ItemsSource = HubProxy.Invoke<List<Room>>("LoadUserRooms", username).Result;
+
+                var list = await HubProxy.Invoke<List<Room>>("LoadUserRooms", username);
+                Contacts.ItemsSource = list;
             }
             else
             {
