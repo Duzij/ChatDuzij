@@ -36,7 +36,10 @@ namespace OpenChat.Repositories
 
         public List<Message> GetAllMessages(string name)
         {
-            return Context.Rooms.Find(name).Messages;
+            if (Context.Rooms.Find(name).Messages == null)
+                return new List<Message>();
+            else
+                return Context.Rooms.Find(name).Messages;
         }
 
         public void WriteMessage(string message, string authorName, string roomName)

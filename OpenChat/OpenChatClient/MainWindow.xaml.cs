@@ -24,9 +24,9 @@ namespace OpenChatClient
     public partial class MainWindow : Window
     {
         public ObservableCollection<RoomDTO> data = new ObservableCollection<RoomDTO>();
-        public List<Message> chatMessages = new List<Message>();
+        public ObservableCollection<MessageDTO> chatMessages = new ObservableCollection<MessageDTO>();
         private string username;
-        private string roomName;
+        private string RoomDTOName;
 
         public MainWindow()
         {
@@ -50,7 +50,7 @@ namespace OpenChatClient
 
             connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
 
-            HubProxy.On<List<RoomDTO>>("LoadUserRooms", (data) =>
+            HubProxy.On<List<RoomDTO>>("LoadUserRoomDTOs", (data) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
@@ -62,25 +62,25 @@ namespace OpenChatClient
             {
                 Dispatcher.InvokeAsync(() =>
                     {
-                        chatMessages.Add(new Message() { Text = MessageTextBox.Text, Author = username, Room = SelectedRoom.RoomName });
+                        chatMessages.Add(new MessageDTO() { Text = MessageTextBox.Text, Author = username, Room = SelectedRoomDTO.RoomName });
                         MessageTextBox.Text = "";
                     });
             });
 
-            HubProxy.On<string>("Notify", (string RoomName) =>
+            HubProxy.On<string>("Notify", (string RoomDTOName) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    data.FirstOrDefault(a => a.RoomName == RoomName).GotNewMessages = true;
-                    if (SelectedRoom.RoomName == RoomName)
-                        chatMessages = HubProxy.Invoke<List<Message>>("LoadGroupData", username, SelectedRoom.RoomName).Result;
+                    data.FirstOrDefault(a => a.RoomName == RoomDTOName).GotNewMessages = true;
+                    if (SelectedRoomDTO.RoomName == RoomDTOName)
+                        chatMessages = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", username, SelectedRoomDTO.RoomName).Result;
                 });
             });
 
             connection.Start();
         }
 
-        public Room SelectedRoom { get; set; }
+        public RoomDTO SelectedRoomDTO { get; set; }
         public IHubProxy HubProxy { get; set; }
 
         public HubConnection Connection { get; set; }
@@ -89,21 +89,23 @@ namespace OpenChatClient
 
         private void Connection_Closed()
         {
-            this.Connection.Dispose();
+            if (Connection != null)
+                this.Connection.Dispose();
         }
 
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            SelectedRoom = (Room)Contacts.SelectedItem;
-            chatMessages = HubProxy.Invoke<List<Message>>("LoadGroupData", username, SelectedRoom.RoomName).Result;
+            SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
+            //chatMessages = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username).Result;
+            ChatView.ItemsSource = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username).Result;
         }
 
         private void sendbnn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                SelectedRoom = (Room)Contacts.SelectedItem;
-                HubProxy.Invoke("SendMessageToGroup", SelectedRoom.RoomName, MessageTextBox.Text);
+                SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
+                HubProxy.Invoke("SendMessageToGroup", SelectedRoomDTO.RoomName, MessageTextBox.Text);
             }
             catch (NullReferenceException ex)
             {
@@ -131,7 +133,7 @@ namespace OpenChatClient
                 this.ErorValidatoin.Visibility = Visibility.Hidden;
                 this.login.Visibility = Visibility.Hidden;
 
-                var list = await HubProxy.Invoke<List<Room>>("LoadUserRooms", username);
+                var list = await HubProxy.Invoke<List<RoomDTO>>("LoadUserRooms", username);
                 Contacts.ItemsSource = list;
             }
             else

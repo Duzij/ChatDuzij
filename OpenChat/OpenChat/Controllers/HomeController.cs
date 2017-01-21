@@ -16,7 +16,7 @@ namespace OpenChat.Controllers
 
         public ActionResult Index()
         {
-            repo.WriteMessage("hello", "Admin", "Room123");
+            //repo.WriteMessage("hello", "Admin", "Room123");
             ViewBag.Title = "Home Page";
             return View();
         }

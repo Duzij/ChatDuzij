@@ -43,16 +43,25 @@ namespace OpenChat.Communication
             Clients.Group(room.RoomName).addChatMessage(Context.User.Identity.Name + " joined.");
         }
 
+        public List<RoomDTO> LoadUserRooms(string username)
+        {
+            return RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a);
+        }
+
         public List<MessageDTO> LoadGroupData (string roomName, string authorName)
         {
             List<MessageDTO> output = new List<MessageDTO>();
             var list = RoomRepository.GetAllMessages(roomName);
-            foreach (var msg in list)
+            if (list.Count != 0)
             {
-                var msgDTO = new MessageDTO();
-                if (authorName == msg.Author)
-                    msgDTO.MyMessage = true;
-                output.Add(msgDTO);
+                foreach (var msg in list)
+                {
+                    var msgDTO = new MessageDTO();
+                    msgDTO = (MessageDTO)msg;
+                    if (authorName == msg.Author)
+                        msgDTO.MyMessage = true;
+                    output.Add(msgDTO);
+                }
             }
             return output;
         }
@@ -99,9 +108,6 @@ namespace OpenChat.Communication
             Clients.All.send(message);
         }
 
-        public List<RoomDTO> LoadUserRooms(string username)
-        {
-            return RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a);
-        }
+      
     }
 }

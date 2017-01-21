@@ -12,6 +12,8 @@
             <Setter Property="Visibility" Value="Collapsed"></Setter>
         </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <local:MessageAlignConverter x:Key="MsgAlign" >
+        </local:MessageAlignConverter>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -78,7 +80,7 @@
                 <RowDefinition Height="8*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <ListView ItemsSource="{Binding chatMessages}"  BorderThickness="0" Margin="5" x:Name="ChatView">
+            <ListView ItemsSource="{Binding chatMessages}" BorderThickness="0" Margin="5" x:Name="ChatView">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Resources>
@@ -97,10 +99,9 @@
                                         <Border Name="InnerBorder" CornerRadius="1" BorderThickness="0">
                                             <Grid>
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition MaxHeight="11" />
+                                                    <RowDefinition MaxHeight="15" />
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
-
                                                 <Rectangle Name="UpperHighlight" Visibility="Collapsed" Fill="Transparent" />
                                                 <GridViewRowPresenter Grid.RowSpan="2"
                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -125,12 +126,13 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
-                        <GridView.Columns>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
+                        <GridView.Columns >
+                            <GridViewColumn >
+                                <GridViewColumn.CellTemplate >
                                     <DataTemplate>
-                                        <StackPanel Height="20" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Text}" Margin="0 4 10 4" VerticalAlignment="Center" />
+                                        <StackPanel Height="30" Orientation="Vertical" HorizontalAlignment="Right">
+                                            <TextBlock TextAlignment="Right" Text="{Binding Text}" HorizontalAlignment="Stretch" Margin="0 4 10 4"
+                                             />
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
