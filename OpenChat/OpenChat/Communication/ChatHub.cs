@@ -19,11 +19,11 @@ namespace OpenChat.Communication
         public UserRepository UserRepository = new UserRepository();
         public RoomRepository RoomRepository = new RoomRepository();
 
+        public Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
+
         public ChatHub()
         {
         }
-
-        public Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
 
         public override Task OnConnected()
         {
@@ -48,7 +48,7 @@ namespace OpenChat.Communication
             return RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a);
         }
 
-        public List<MessageDTO> LoadGroupData (string roomName, string authorName)
+        public void LoadGroupData(string roomName, string authorName)
         {
             List<MessageDTO> output = new List<MessageDTO>();
             var list = RoomRepository.GetAllMessages(roomName);
@@ -63,16 +63,13 @@ namespace OpenChat.Communication
                     output.Add(msgDTO);
                 }
             }
-            return output;
+            Clients.Caller.ReloadGroupData(output);
         }
 
-        public void SendMessageToGroup(string RoomName, string message)
+        public void SendMessageToGroup(string RoomName, string message, string user)
         {
-            var room = RoomRepository.Find(RoomName);
-            string user = this.ConnectedUsers[Context.ConnectionId];
-
-            Clients.Group(RoomName).Notify(RoomName);
             RoomRepository.WriteMessage(message, user, RoomName);
+            Clients.Others.Notify(RoomName);
         }
 
         public void Login(string username, string password)
@@ -107,7 +104,5 @@ namespace OpenChat.Communication
         {
             Clients.All.send(message);
         }
-
-      
     }
 }

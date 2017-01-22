@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Windows.Automation.Peers;
 using Microsoft.AspNet.SignalR.Hubs;
 using OpenChat.Models;
 using OpenChatClient.Model;
@@ -61,19 +62,30 @@ namespace OpenChatClient
             HubProxy.On("SendToGroup", () =>
             {
                 Dispatcher.InvokeAsync(() =>
-                    {
-                        chatMessages.Add(new MessageDTO() { Text = MessageTextBox.Text, Author = username, Room = SelectedRoomDTO.RoomName });
-                        MessageTextBox.Text = "";
-                    });
+                {
+                    chatMessages.Add(new MessageDTO() { Text = MessageTextBox.Text, Author = username, Room = SelectedRoomDTO.RoomName });
+                    MessageTextBox.Text = "";
+                });
             });
 
             HubProxy.On<string>("Notify", (string RoomDTOName) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    data.FirstOrDefault(a => a.RoomName == RoomDTOName).GotNewMessages = true;
+                    var room = data.First(a => a.RoomName == RoomDTOName);
+                    room.GotNewMessages = true;
                     if (SelectedRoomDTO.RoomName == RoomDTOName)
-                        chatMessages = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", username, SelectedRoomDTO.RoomName).Result;
+                        ReloadMessageSource();
+                });
+            });
+
+            HubProxy.On<List<MessageDTO>>("ReloadGroupData", (List<MessageDTO> msgs) =>
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    this.ChatView.ItemsSource = msgs;
+                    ChatView.Items.MoveCurrentToLast();
+                    ChatView.ScrollIntoView(ChatView.Items.CurrentItem);
                 });
             });
 
@@ -87,6 +99,12 @@ namespace OpenChatClient
 
         public ChatClientInitalizer chatInit { get; set; }
 
+        public void ReloadMessageSource()
+        {
+            ChatView.ItemsSource = null;
+            HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username);
+        }
+
         private void Connection_Closed()
         {
             if (Connection != null)
@@ -97,7 +115,7 @@ namespace OpenChatClient
         {
             SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
             //chatMessages = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username).Result;
-            ChatView.ItemsSource = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username).Result;
+            ReloadMessageSource();
         }
 
         private void sendbnn_Click(object sender, RoutedEventArgs e)
@@ -105,7 +123,9 @@ namespace OpenChatClient
             try
             {
                 SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
-                HubProxy.Invoke("SendMessageToGroup", SelectedRoomDTO.RoomName, MessageTextBox.Text);
+                HubProxy.Invoke("SendMessageToGroup", SelectedRoomDTO.RoomName, MessageTextBox.Text, username);
+                ReloadMessageSource();
+                MessageTextBox.Text = "";
             }
             catch (NullReferenceException ex)
             {
@@ -117,7 +137,7 @@ namespace OpenChatClient
         {
             try
             {
-                await HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Text);
+                await HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Password);
             }
             catch (NullReferenceException ex)
             {
@@ -132,7 +152,6 @@ namespace OpenChatClient
                 this.username = LoginTextBox.Text;
                 this.ErorValidatoin.Visibility = Visibility.Hidden;
                 this.login.Visibility = Visibility.Hidden;
-
                 var list = await HubProxy.Invoke<List<RoomDTO>>("LoadUserRooms", username);
                 Contacts.ItemsSource = list;
             }

@@ -12,7 +12,7 @@
             <Setter Property="Visibility" Value="Collapsed"></Setter>
         </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <local:MessageAlignConverter x:Key="MsgAlign" >
+        <local:MessageAlignConverter x:Key="MsgAlign">
         </local:MessageAlignConverter>
     </Window.Resources>
     <Grid>
@@ -41,7 +41,7 @@
             <TextBox Grid.Column="1" Grid.Row="2" x:Name="LoginTextBox"></TextBox>
 
             <Label Content="Password:" Grid.Row="3" Grid.Column="1" />
-            <TextBox Grid.Column="1" Grid.Row="4" x:Name="PasswordTextBox"></TextBox>
+            <PasswordBox Grid.Column="1" Grid.Row="4" x:Name="PasswordTextBox"></PasswordBox>
 
             <Button x:Name="LoginBtn" Grid.Column="1" Margin="0 5 0 0" Grid.Row="5" Content="LOGIN" Click="LoginBtn_Click" />
 
@@ -55,7 +55,7 @@
             </Grid.RowDefinitions>
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
-            <ListView Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
+            <ListView ScrollViewer.IsDeferredScrollingEnabled="True"  Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
                         <GridView.Columns>
@@ -89,6 +89,7 @@
                                 <GradientStop Color="Transparent" Offset="1" />
                             </LinearGradientBrush>
                         </Style.Resources>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -126,18 +127,13 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
-                        <GridView.Columns >
-                            <GridViewColumn >
-                                <GridViewColumn.CellTemplate >
-                                    <DataTemplate>
-                                        <StackPanel Height="30" Orientation="Vertical" HorizontalAlignment="Right">
-                                            <TextBlock TextAlignment="Right" Text="{Binding Text}" HorizontalAlignment="Stretch" Margin="0 4 10 4"
-                                             />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView.Columns>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Width="340" TextAlignment="{Binding MyMessage, Converter={StaticResource MsgAlign}}" Text="{Binding Text}" Margin="0 4 10 4" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>

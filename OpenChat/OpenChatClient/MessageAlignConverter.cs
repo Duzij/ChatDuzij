@@ -14,15 +14,14 @@ namespace OpenChatClient
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)value)
-                return HorizontalAlignment.Right;
+                return TextAlignment.Right;
 
-            return HorizontalAlignment.Left;
+            return TextAlignment.Left;
         }
-
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((HorizontalAlignment)value == HorizontalAlignment.Right)
+            if ((TextAlignment)value == TextAlignment.Right)
                 return true;
 
             return false;
