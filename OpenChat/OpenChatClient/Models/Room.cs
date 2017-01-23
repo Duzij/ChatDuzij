@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace OpenChat.Models
+namespace OpenChatClient.Models
 {
     public class Room
     {
