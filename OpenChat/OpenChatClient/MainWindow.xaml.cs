@@ -70,9 +70,9 @@ namespace OpenChatClient
 
             HubProxy.On<string>("Notify", (string RoomDTOName) =>
             {
+                var room = data.First(a => a.RoomName == RoomDTOName);
                 Dispatcher.InvokeAsync(() =>
                 {
-                    var room = data.First(a => a.RoomName == RoomDTOName);
                     room.GotNewMessages = true;
                     if (SelectedRoomDTO.RoomName == RoomDTOName)
                         ReloadMessageSource();
