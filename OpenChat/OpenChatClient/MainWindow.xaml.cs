@@ -17,15 +17,14 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Automation.Peers;
 using Microsoft.AspNet.SignalR.Hubs;
-using OpenChat.Models;
-using OpenChatClient.Model;
+using OpenChatClient.Models;
 
 namespace OpenChatClient
 {
     public partial class MainWindow : Window
     {
-        public ObservableCollection<RoomDTO> data = new ObservableCollection<RoomDTO>();
-        public ObservableCollection<MessageDTO> chatMessages = new ObservableCollection<MessageDTO>();
+        public ObservableCollection<RoomDTO> LoadedRooms = new ObservableCollection<RoomDTO>();
+        public ObservableCollection<MessageDTO> LoadedMessages = new ObservableCollection<MessageDTO>();
         private string username;
         private string RoomDTOName;
 
@@ -45,32 +44,13 @@ namespace OpenChatClient
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    this.LoginVisability(valid);
-                });
-            });
-
-            connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
-
-            HubProxy.On<List<RoomDTO>>("LoadUserRoomDTOs", (data) =>
-            {
-                Dispatcher.InvokeAsync(() =>
-                {
-                    this.data = new ObservableCollection<RoomDTO>(data);
-                });
-            });
-
-            HubProxy.On("SendToGroup", () =>
-            {
-                Dispatcher.InvokeAsync(() =>
-                {
-                    chatMessages.Add(new MessageDTO() { Text = MessageTextBox.Text, Author = username, Room = SelectedRoomDTO.RoomName });
-                    MessageTextBox.Text = "";
+                    this.LoginVisibility(valid);
                 });
             });
 
             HubProxy.On<string>("Notify", (string RoomDTOName) =>
             {
-                var room = data.First(a => a.RoomName == RoomDTOName);
+                var room = LoadedRooms.First(a => a.RoomName == RoomDTOName);
                 Dispatcher.InvokeAsync(() =>
                 {
                     room.GotNewMessages = true;
@@ -79,15 +59,29 @@ namespace OpenChatClient
                 });
             });
 
-            HubProxy.On<List<MessageDTO>>("ReloadGroupData", (List<MessageDTO> msgs) =>
+            HubProxy.On<List<MessageDTO>>("LoadRoomMessages", (List<MessageDTO> msgs) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
+                    this.LoadedMessages = new ObservableCollection<MessageDTO>(msgs);
                     this.ChatView.ItemsSource = msgs;
                     ChatView.Items.MoveCurrentToLast();
                     ChatView.ScrollIntoView(ChatView.Items.CurrentItem);
                 });
             });
+
+            HubProxy.On<List<MessageDTO>>("LoadRooms", (List<MessageDTO> rooms) =>
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    Contacts.ItemsSource = rooms;
+                    this.ChatView.ItemsSource = rooms;
+                    ChatView.Items.MoveCurrentToLast();
+                    ChatView.ScrollIntoView(ChatView.Items.CurrentItem);
+                });
+            });
+
+            connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
 
             connection.Start();
         }
@@ -102,7 +96,7 @@ namespace OpenChatClient
         public void ReloadMessageSource()
         {
             ChatView.ItemsSource = null;
-            HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username);
+            HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadRoomMessages", SelectedRoomDTO.RoomName, username);
         }
 
         private void Connection_Closed()
@@ -114,7 +108,7 @@ namespace OpenChatClient
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
-            //chatMessages = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username).Result;
+            //LoadedMessages = HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadGroupData", SelectedRoomDTO.RoomName, username).Result;
             ReloadMessageSource();
         }
 
@@ -123,7 +117,7 @@ namespace OpenChatClient
             try
             {
                 SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
-                HubProxy.Invoke("SendMessageToGroup", SelectedRoomDTO.RoomName, MessageTextBox.Text, username);
+                HubProxy.Invoke("SendMessage", SelectedRoomDTO.RoomName, MessageTextBox.Text, username);
                 ReloadMessageSource();
                 MessageTextBox.Text = "";
             }
@@ -145,20 +139,30 @@ namespace OpenChatClient
             }
         }
 
-        private async void LoginVisability(bool valid)
+        private async void LoginVisibility(bool valid)
         {
             if (valid)
             {
                 this.username = LoginTextBox.Text;
                 this.ErorValidatoin.Visibility = Visibility.Hidden;
                 this.login.Visibility = Visibility.Hidden;
-                var list = await HubProxy.Invoke<List<RoomDTO>>("LoadUserRooms", username);
-                Contacts.ItemsSource = list;
+                await HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
             }
             else
             {
                 this.ErorValidatoin.Visibility = Visibility.Visible;
                 this.login.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void AddRoom(object sender, RoutedEventArgs e)
+        {
+            var list = HubProxy.Invoke<List<UserDTO>>("LoadUsers", username).Result;
+            CreateRoomWindow win = new CreateRoomWindow(list);
+            if (win.DialogResult == true)
+            {
+                List<string> selectedUsers = win.AvalibleUsers.Where(b => b.IsSelected).ToList().ConvertAll(a => a.Username);
+                HubProxy.Invoke<List<UserDTO>>("LoadUsers", username).Result;
             }
         }
     }

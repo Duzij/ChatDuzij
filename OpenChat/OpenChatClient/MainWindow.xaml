@@ -39,7 +39,6 @@
             </Grid.ColumnDefinitions>
             <Label Content="Username:" Grid.Row="1" Grid.Column="1" />
             <TextBox Grid.Column="1" Grid.Row="2" x:Name="LoginTextBox"></TextBox>
-
             <Label Content="Password:" Grid.Row="3" Grid.Column="1" />
             <PasswordBox Grid.Column="1" Grid.Row="4" x:Name="PasswordTextBox"></PasswordBox>
 
@@ -52,10 +51,11 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
-            <ListView ScrollViewer.IsDeferredScrollingEnabled="True"  Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
+            <ListView  Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
                         <GridView.Columns>
@@ -73,6 +73,8 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+
+            <Button Content="Add room" Grid.Row="2" Margin="2" Click="AddRoom"></Button>
         </Grid>
 
         <Grid Grid.Column="0">
@@ -80,7 +82,7 @@
                 <RowDefinition Height="8*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <ListView ItemsSource="{Binding chatMessages}" BorderThickness="0" Margin="5" x:Name="ChatView">
+            <ListView ItemsSource="{Binding LoadedMessages}" BorderThickness="0" Margin="5" x:Name="ChatView">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Resources>
@@ -104,7 +106,7 @@
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
                                                 <Rectangle Name="UpperHighlight" Visibility="Collapsed" Fill="Transparent" />
-                                                <GridViewRowPresenter Grid.RowSpan="2"
+                                                <ContentPresenter Grid.RowSpan="2"
                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                             </Grid>
@@ -125,17 +127,12 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
-                <ListView.View>
-                    <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
-                        <GridViewColumn>
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Width="340" TextAlignment="{Binding MyMessage, Converter={StaticResource MsgAlign}}" Text="{Binding Text}" Margin="0 4 10 4" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Stretch" TextAlignment="{Binding MyMessage, Converter={StaticResource MsgAlign}}" Text="{Binding Text}" Margin="0 4 10 4" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
             <Grid Grid.Row="1" Margin="5 0 5 5">
                 <Grid.ColumnDefinitions>

@@ -10,6 +10,7 @@ using OpenChat.Models;
 using Microsoft.AspNet.SignalR.Hubs;
 using OpenChat.Repositories;
 using OpenChatClient.Model;
+using WebGrease.Css.Extensions;
 
 namespace OpenChat.Communication
 {
@@ -25,16 +26,6 @@ namespace OpenChat.Communication
         {
         }
 
-        public override Task OnConnected()
-        {
-            return base.OnConnected();
-        }
-
-        public override Task OnDisconnected(bool stopCalled)
-        {
-            return base.OnDisconnected(stopCalled);
-        }
-
         public async Task JoinRoom(Room room)
         {
             await Groups.Add(Context.ConnectionId, room.RoomName);
@@ -43,12 +34,17 @@ namespace OpenChat.Communication
             Clients.Group(room.RoomName).addChatMessage(Context.User.Identity.Name + " joined.");
         }
 
+        public List<UserDTO> LoadUsers(string usename)
+        {
+            return UserRepository.FindAll().Where(a => a.Username == usename).ToList().ConvertAll(a => (UserDTO)a);
+        }
+
         public List<RoomDTO> LoadUserRooms(string username)
         {
             return RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a);
         }
 
-        public void LoadGroupData(string roomName, string authorName)
+        public void LoadRoomMessages(string roomName, string authorName)
         {
             List<MessageDTO> output = new List<MessageDTO>();
             var list = RoomRepository.GetAllMessages(roomName);
@@ -63,18 +59,25 @@ namespace OpenChat.Communication
                     output.Add(msgDTO);
                 }
             }
-            Clients.Caller.ReloadGroupData(output);
+            Clients.Caller.LoadRoomMessages(output);
         }
 
-        public void SendMessageToGroup(string RoomName, string message, string user)
+        public void SendMessage(string RoomName, string message, string user)
         {
             RoomRepository.WriteMessage(message, user, RoomName);
             Clients.Others.Notify(RoomName);
         }
 
+        public void CreateRoom(string roomName, List<string> addedUsers)
+        {
+            RoomRepository.AddRoom(new Room()
+            {
+                RoomName = roomName
+            });
+        }
+
         public void Login(string username, string password)
         {
-            Clients.All.Send(Context.ConnectionId);
             if (!ConnectedUsers.ContainsKey(Context.ConnectionId))
             {
                 if (UserRepository.LoginUser(username, password) == "404") return;
@@ -85,24 +88,6 @@ namespace OpenChat.Communication
             {
                 Clients.Caller.Login(false);
             }
-        }
-
-        //public void Register(string username, string password)
-        //{
-        //    if (username != null || password != null)
-        //    {
-        //        this.UserRepository.AddUser(new User(username, password));
-        //        Clients.Caller.Registered(true);
-        //    }
-        //    else
-        //    {
-        //        Clients.Caller.Registered(false);
-        //    }
-        //}
-
-        public void PublicSend(string message)
-        {
-            Clients.All.send(message);
         }
     }
 }
