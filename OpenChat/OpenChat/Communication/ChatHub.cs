@@ -26,22 +26,14 @@ namespace OpenChat.Communication
         {
         }
 
-        public async Task JoinRoom(Room room)
-        {
-            await Groups.Add(Context.ConnectionId, room.RoomName);
-            RoomRepository.AddRoom(room);
-
-            Clients.Group(room.RoomName).addChatMessage(Context.User.Identity.Name + " joined.");
-        }
-
         public List<UserDTO> LoadUsers(string usename)
         {
-            return UserRepository.FindAll().Where(a => a.Username == usename).ToList().ConvertAll(a => (UserDTO)a);
+            return UserRepository.FindAll().Where(a => a.Username != usename).ToList().ConvertAll(a => (UserDTO)a);
         }
 
-        public List<RoomDTO> LoadUserRooms(string username)
+        public void LoadRooms(string username)
         {
-            return RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a);
+            Clients.Caller.LoadRooms(RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a));
         }
 
         public void LoadRoomMessages(string roomName, string authorName)
@@ -65,15 +57,17 @@ namespace OpenChat.Communication
         public void SendMessage(string RoomName, string message, string user)
         {
             RoomRepository.WriteMessage(message, user, RoomName);
-            Clients.Others.Notify(RoomName);
+            Clients.Group(RoomName).Notify(RoomName);
         }
 
         public void CreateRoom(string roomName, List<string> addedUsers)
         {
-            RoomRepository.AddRoom(new Room()
-            {
-                RoomName = roomName
-            });
+            RoomRepository.AddRoom(roomName);
+        }
+
+        public void JoinRoom(string roomName)
+        {
+            Groups.Add(Context.ConnectionId, roomName);
         }
 
         public void Login(string username, string password)
@@ -82,6 +76,11 @@ namespace OpenChat.Communication
             {
                 if (UserRepository.LoginUser(username, password) == "404") return;
                 ConnectedUsers.Add(Context.ConnectionId, username);
+
+                foreach (var room in RoomRepository.FindAllUserRooms(username))
+                {
+                    JoinRoom(room.RoomName);
+                }
                 Clients.Caller.Login(true);
             }
             else

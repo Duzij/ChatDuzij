@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Microsoft.AspNet.SignalR.Client;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
-using System.Windows.Automation.Peers;
-using Microsoft.AspNet.SignalR.Hubs;
 using OpenChatClient.Models;
 
 namespace OpenChatClient
@@ -70,14 +58,12 @@ namespace OpenChatClient
                 });
             });
 
-            HubProxy.On<List<MessageDTO>>("LoadRooms", (List<MessageDTO> rooms) =>
+            HubProxy.On<List<RoomDTO>>("LoadRooms", (List<RoomDTO> rooms) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
                     Contacts.ItemsSource = rooms;
-                    this.ChatView.ItemsSource = rooms;
-                    ChatView.Items.MoveCurrentToLast();
-                    ChatView.ScrollIntoView(ChatView.Items.CurrentItem);
+                    this.LoadedRooms = new ObservableCollection<RoomDTO>(rooms);
                 });
             });
 
@@ -159,10 +145,11 @@ namespace OpenChatClient
         {
             var list = HubProxy.Invoke<List<UserDTO>>("LoadUsers", username).Result;
             CreateRoomWindow win = new CreateRoomWindow(list);
+            win.ShowDialog();
             if (win.DialogResult == true)
             {
-                List<string> selectedUsers = win.AvalibleUsers.Where(b => b.IsSelected).ToList().ConvertAll(a => a.Username);
-                HubProxy.Invoke<List<UserDTO>>("LoadUsers", username).Result;
+                List<string> selectedUsers = win.avalibleUsers.Where(b => b.IsSelected).ToList().ConvertAll(a => a.Username);
+                HubProxy.Invoke<List<UserDTO>>("LoadUsers", username);
             }
         }
     }

@@ -21,9 +21,9 @@ namespace OpenChat.Repositories
             return Context.Rooms.ToList();
         }
 
-        public void AddRoom(Room u)
+        public void AddRoom(string roomName)
         {
-            this.Context.Rooms.Add(u);
+            this.Context.Rooms.Add(new Room(roomName));
             this.Context.SaveChanges();
         }
 

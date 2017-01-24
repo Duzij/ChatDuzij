@@ -22,24 +22,20 @@ namespace OpenChatClient
     /// </summary>
     public partial class CreateRoomWindow : Window
     {
-        private ObservableCollection<UserDTO> avalibleUsers;
+        public ObservableCollection<UserDTO> avalibleUsers = new ObservableCollection<UserDTO>();
 
         public CreateRoomWindow(List<UserDTO> users)
         {
             InitializeComponent();
-            this.users.ItemsSource = users;
+            avalibleUsers = new ObservableCollection<UserDTO>(users);
+            usersDataGrid.ItemsSource = users;
         }
 
         public Room TempRoom { get; set; }
 
-        public ObservableCollection<UserDTO> AvalibleUsers
-        {
-            get { return AvalibleUsers; }
-            set { AvalibleUsers = value; }
-        }
-
         private void AddRoomBtn_Click(object sender, RoutedEventArgs e)
         {
+            this.TempRoom = new RoomDTO() { RoomName = RoomName.Text, Users = avalibleUsers };
             this.Close();
         }
 
