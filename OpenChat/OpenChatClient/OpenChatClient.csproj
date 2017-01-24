@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="MessageAlignConverter.cs" />
     <Compile Include="Models\ChatDbContext.cs" />
+    <Compile Include="Models\CreateRoomDTO.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageDTO.cs" />
     <Compile Include="Models\Room.cs" />
