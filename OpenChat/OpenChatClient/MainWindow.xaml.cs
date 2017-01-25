@@ -20,14 +20,22 @@ namespace OpenChatClient
         {
             DataContext = this;
             InitializeComponent();
+            try
+            {
+                var connection = new HubConnection("http://localhost:11878/");
+                connection.Closed += Connection_Closed;
+                HubProxy = connection.CreateHubProxy("chat");
 
-            var connection = new HubConnection("http://localhost:11878/");
-            connection.Closed += Connection_Closed;
-            HubProxy = connection.CreateHubProxy("chat");
+                connection.TraceLevel = TraceLevels.All;
+                connection.TraceWriter = Console.Out;
 
-            connection.TraceLevel = TraceLevels.All;
-            connection.TraceWriter = Console.Out;
-
+            }
+            catch (Exception)
+            {
+                ErrorValidatoin.Content = "Cannot connect to server. Contact your administrator";
+                ErrorValidatoin.Visibility = Visibility.Visible;
+            }
+           
             HubProxy.On<bool>("Login", (valid) =>
             {
                 Dispatcher.InvokeAsync(() =>
@@ -130,13 +138,14 @@ namespace OpenChatClient
             if (valid)
             {
                 this.username = LoginTextBox.Text;
-                this.ErorValidatoin.Visibility = Visibility.Hidden;
+                this.ErrorValidatoin.Visibility = Visibility.Hidden;
                 this.login.Visibility = Visibility.Hidden;
                 await HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
             }
             else
             {
-                this.ErorValidatoin.Visibility = Visibility.Visible;
+                ErrorValidatoin.Content = "Incorrect username or password";
+                this.ErrorValidatoin.Visibility = Visibility.Visible;
                 this.login.Visibility = Visibility.Visible;
             }
         }

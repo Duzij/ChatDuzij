@@ -9,6 +9,6 @@ namespace OpenChatClient.Models
     public class CreateRoomDTO
     {
         public string Name { get; set; }
-        public List<string> Users { get; set; }
+        public List<int> Users { get; set; }
     }
 }

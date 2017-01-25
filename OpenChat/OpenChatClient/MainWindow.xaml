@@ -44,7 +44,7 @@
 
             <Button x:Name="LoginBtn" Grid.Column="1" Margin="0 5 0 0" Grid.Row="5" Content="LOGIN" Click="LoginBtn_Click" />
 
-            <Label x:Name="ErorValidatoin" Visibility="Hidden" Content="Incorrect username or password" Grid.Row="6" Grid.Column="1" />
+            <Label x:Name="ErrorValidatoin" Visibility="Hidden" Content=" " Grid.Row="6" Grid.Column="1" />
         </Grid>
 
         <Grid Grid.Column="1">

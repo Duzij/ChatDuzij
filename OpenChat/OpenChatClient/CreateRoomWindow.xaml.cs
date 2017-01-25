@@ -31,11 +31,11 @@ namespace OpenChatClient
             usersDataGrid.ItemsSource = users;
         }
 
-        public Room TempRoom { get; set; }
+        public CreateRoomDTO TempRoom { get; set; }
 
         private void AddRoomBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.TempRoom = new RoomDTO() { RoomName = RoomName.Text, Users = avalibleUsers };
+            this.TempRoom = new CreateRoomDTO() { Name = RoomName.Text, Users = avalibleUsers.Select(a => a.Username).ToList() };
             this.Close();
         }
 
