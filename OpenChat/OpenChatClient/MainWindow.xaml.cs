@@ -15,6 +15,7 @@ namespace OpenChatClient
         public ObservableCollection<MessageDTO> LoadedMessages = new ObservableCollection<MessageDTO>();
         private string username;
         private string RoomDTOName;
+        public ChatClientInitalizer Initalizer { get; set; }
 
         public MainWindow()
         {
@@ -22,13 +23,9 @@ namespace OpenChatClient
             InitializeComponent();
             try
             {
-                var connection = new HubConnection("http://localhost:11878/");
-                connection.Closed += Connection_Closed;
-                HubProxy = connection.CreateHubProxy("chat");
-
-                connection.TraceLevel = TraceLevels.All;
-                connection.TraceWriter = Console.Out;
-
+                Initalizer = new ChatClientInitalizer("http://localhost:11878/");
+                Connection = Initalizer.connection;
+                HubProxy = Initalizer.chat;
             }
             catch (Exception)
             {
@@ -36,7 +33,7 @@ namespace OpenChatClient
                 ErrorValidatoin.Visibility = Visibility.Visible;
             }
            
-            HubProxy.On<bool>("Login", (valid) =>
+            HubProxy.On("Login", (valid) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
@@ -44,7 +41,7 @@ namespace OpenChatClient
                 });
             });
 
-            HubProxy.On<string>("Notify", (string RoomDTOName) =>
+            HubProxy.On("Notify", (string RoomDTOName) =>
             {
                 var room = LoadedRooms.First(a => a.RoomName == RoomDTOName);
                 Dispatcher.InvokeAsync(() =>
@@ -55,7 +52,7 @@ namespace OpenChatClient
                 });
             });
 
-            HubProxy.On<List<MessageDTO>>("LoadRoomMessages", (List<MessageDTO> msgs) =>
+            HubProxy.On("LoadRoomMessages", (List<MessageDTO> msgs) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
@@ -66,7 +63,7 @@ namespace OpenChatClient
                 });
             });
 
-            HubProxy.On<List<RoomDTO>>("LoadRooms", (List<RoomDTO> rooms) =>
+            HubProxy.On("LoadRooms", (List<RoomDTO> rooms) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
@@ -75,9 +72,9 @@ namespace OpenChatClient
                 });
             });
 
-            connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
+            Connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
 
-            connection.Start();
+            Connection.Start();
         }
 
         public RoomDTO SelectedRoomDTO { get; set; }
@@ -91,12 +88,6 @@ namespace OpenChatClient
         {
             ChatView.ItemsSource = null;
             HubProxy.Invoke<ObservableCollection<MessageDTO>>("LoadRoomMessages", SelectedRoomDTO.RoomName, username);
-        }
-
-        private void Connection_Closed()
-        {
-            if (Connection != null)
-                this.Connection.Dispose();
         }
 
         private void Contacts_MouseDoubleClick(object sender, MouseButtonEventArgs e)

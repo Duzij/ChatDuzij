@@ -14,8 +14,15 @@ namespace OpenChatClient
         {
             connection = new HubConnection(server);
             chat = connection.CreateHubProxy("Chat");
-            connection.TraceLevel = TraceLevels.All;
-            connection.TraceWriter = Console.Out;
+            connection.Closed += Connection_Closed;
+
+
+        }
+
+        private void Connection_Closed()
+        {
+            if (connection != null)
+                this.connection.Dispose();
         }
 
         public ChatClientInitalizer()
@@ -23,7 +30,7 @@ namespace OpenChatClient
             try
             {
                 connection = new HubConnection(Server);
-                chat = connection.CreateHubProxy("Chat");
+                chat = connection.CreateHubProxy("chat");
 
                 //client-side logging
                 connection.TraceLevel = TraceLevels.All;
