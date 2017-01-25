@@ -72,9 +72,9 @@ namespace OpenChat.Communication
             }
         }
 
-        public void JoinRoom(string roomName, string connectionID)
+        public void JoinRoom(string roomName, string username)
         {
-            Groups.Add(connectionID, roomName);
+            Groups.Add(ConnectedUsers[username], roomName);
             //Users reload their rooms
         }
 
@@ -83,11 +83,12 @@ namespace OpenChat.Communication
             if (!ConnectedUsers.ContainsKey(Context.ConnectionId))
             {
                 if (UserRepository.LoginUser(username, password) == "404") return;
-                ConnectedUsers.Add(Context.ConnectionId, username);
+
+                ConnectedUsers.Add(username, Context.ConnectionId);
 
                 foreach (var room in RoomRepository.FindAllUserRooms(username))
                 {
-                    JoinRoom(room.RoomName);
+                    JoinRoom(room.RoomName, Context.ConnectionId);
                 }
                 Clients.Caller.Login(true);
             }
