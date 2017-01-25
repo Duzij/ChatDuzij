@@ -36,6 +36,11 @@ namespace OpenChat.Communication
             Clients.Caller.LoadRooms(RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a));
         }
 
+        public void LoadRoomsForRoom(string roomName)
+        {
+            Clients.Group(roomName).LoadRooms();
+        }
+
         public void LoadRoomMessages(string roomName, string authorName)
         {
             List<MessageDTO> output = new List<MessageDTO>();
@@ -65,9 +70,10 @@ namespace OpenChat.Communication
             RoomRepository.AddRoom(roomName);
             foreach (var user in addedUsers)
             {
-                if (ConnectedUsers.ContainsValue(user))
+                if (ConnectedUsers.ContainsKey(user))
                 {
-                    //this.JoinRoom(roomName, ConnectedUsers.)
+                    JoinRoom(roomName, user);
+                    Clients.Client(ConnectedUsers[user]).LoadRooms(user);
                 }
             }
         }
@@ -75,12 +81,12 @@ namespace OpenChat.Communication
         public void JoinRoom(string roomName, string username)
         {
             Groups.Add(ConnectedUsers[username], roomName);
-            //Users reload their rooms
+            RoomRepository.JoinRoom(username, roomName);
         }
 
         public void Login(string username, string password)
         {
-            if (!ConnectedUsers.ContainsKey(Context.ConnectionId))
+            if (!ConnectedUsers.ContainsValue(Context.ConnectionId) && !ConnectedUsers.ContainsKey(username))
             {
                 if (UserRepository.LoginUser(username, password) == "404") return;
 
@@ -88,8 +94,9 @@ namespace OpenChat.Communication
 
                 foreach (var room in RoomRepository.FindAllUserRooms(username))
                 {
-                    JoinRoom(room.RoomName, Context.ConnectionId);
+                    JoinRoom(room.RoomName, username);
                 }
+
                 Clients.Caller.Login(true);
             }
             else

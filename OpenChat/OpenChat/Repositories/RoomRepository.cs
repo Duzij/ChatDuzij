@@ -50,14 +50,9 @@ namespace OpenChat.Repositories
             this.Context.SaveChanges();
         }
 
-        public void NotifyUsersInGroup(string authorName, string roomName)
+        public void JoinRoom(string username, string roomName)
         {
-
-        }
-
-        public void JoinRoom(string authorName, string roomName)
-        {
-            var user = Context.Users.Find(authorName);
+            var user = Context.Users.Find(username);
             Context.Rooms.Find(roomName).Users.Add(user);
             this.Context.SaveChanges();
         }

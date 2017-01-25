@@ -41,6 +41,11 @@ namespace OpenChatClient
                 });
             });
 
+            HubProxy.On("ReLoadRooms", (valid) =>
+            {
+                HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
+            });
+
             HubProxy.On("Notify", (string RoomDTOName) =>
             {
                 var room = LoadedRooms.First(a => a.RoomName == RoomDTOName);
@@ -149,6 +154,7 @@ namespace OpenChatClient
             if (win.DialogResult == true)
             {
                 List<string> selectedUsers = win.avalibleUsers.Where(b => b.IsSelected).ToList().ConvertAll(a => a.Username);
+                selectedUsers.Add(username);
                 HubProxy.Invoke<List<UserDTO>>("CreateRoom", username, selectedUsers);
             }
         }

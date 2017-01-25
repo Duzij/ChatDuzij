@@ -12,8 +12,6 @@ namespace OpenChat.Controllers
 {
     public class HomeController : Controller
     {
-        public RoomRepository repo = new RoomRepository();
-
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
