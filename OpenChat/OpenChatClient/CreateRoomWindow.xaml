@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button x:Name="AddRoomBtn" Content="OK" Margin="0 0 1 0 " Click="AddRoomBtn_Click" IsDefault="True" ></Button>
+            <Button x:Name="AddRoomBtn" Content="OK" Margin="0 0 1 0 " Click="AddRoomBtn_Click" IsDefault="True" IsCancel="False" ></Button>
             <Button x:Name="CancelBtn" Grid.Column="1" Margin="1 0 0 0 " Content="Cancel" Click="CancelBtn_Click" IsCancel="True"></Button>
         </Grid>
     </Grid>

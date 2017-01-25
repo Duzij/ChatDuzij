@@ -140,7 +140,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBox x:Name="MessageTextBox" Grid.Column="0" Padding="5"></TextBox>
-                <Button x:Name="sendbnn" Grid.Column="1" Padding="5" Content="SEND" Click="sendbnn_Click"></Button>
+                <Button x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Click="sendbnn_Click"></Button>
             </Grid>
         </Grid>
     </Grid>

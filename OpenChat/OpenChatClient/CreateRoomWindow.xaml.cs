@@ -36,6 +36,7 @@ namespace OpenChatClient
         private void AddRoomBtn_Click(object sender, RoutedEventArgs e)
         {
             this.TempRoom = new CreateRoomDTO() { Name = RoomName.Text, Users = avalibleUsers.Select(a => a.Username).ToList() };
+            this.DialogResult = true;
             this.Close();
         }
 

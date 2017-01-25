@@ -63,11 +63,19 @@ namespace OpenChat.Communication
         public void CreateRoom(string roomName, List<string> addedUsers)
         {
             RoomRepository.AddRoom(roomName);
+            foreach (var user in addedUsers)
+            {
+                if (ConnectedUsers.ContainsValue(user))
+                {
+                    //this.JoinRoom(roomName, ConnectedUsers.)
+                }
+            }
         }
 
-        public void JoinRoom(string roomName)
+        public void JoinRoom(string roomName, string connectionID)
         {
-            Groups.Add(Context.ConnectionId, roomName);
+            Groups.Add(connectionID, roomName);
+            //Users reload their rooms
         }
 
         public void Login(string username, string password)

@@ -149,7 +149,7 @@ namespace OpenChatClient
             if (win.DialogResult == true)
             {
                 List<string> selectedUsers = win.avalibleUsers.Where(b => b.IsSelected).ToList().ConvertAll(a => a.Username);
-                HubProxy.Invoke<List<UserDTO>>("LoadUsers", username);
+                HubProxy.Invoke<List<UserDTO>>("CreateRoom", username, selectedUsers);
             }
         }
     }
