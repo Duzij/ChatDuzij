@@ -3,10 +3,19 @@ namespace OpenChat.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class InitialCommit : DbMigration
     {
         public override void Up()
         {
+            CreateTable(
+                "dbo.UserIdentity",
+                c => new
+                    {
+                        Username = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
+                        ConnectionID = c.String(unicode: false),
+                    })
+                .PrimaryKey(t => t.Username);
+            
             CreateTable(
                 "dbo.Room",
                 c => new
@@ -66,6 +75,7 @@ namespace OpenChat.Migrations
             DropTable("dbo.User");
             DropTable("dbo.Message");
             DropTable("dbo.Room");
+            DropTable("dbo.UserIdentity");
         }
     }
 }

@@ -13,9 +13,9 @@ namespace OpenChatClient
     {
         public ObservableCollection<RoomDTO> LoadedRooms = new ObservableCollection<RoomDTO>();
         public ObservableCollection<MessageDTO> LoadedMessages = new ObservableCollection<MessageDTO>();
+        public RoomDTO SelectedRoomDTO = new RoomDTO();
         private string username;
         private string RoomDTOName;
-        public ChatClientInitalizer Initalizer { get; set; }
 
         public MainWindow()
         {
@@ -32,7 +32,7 @@ namespace OpenChatClient
                 ErrorValidatoin.Content = "Cannot connect to server. Contact your administrator";
                 ErrorValidatoin.Visibility = Visibility.Visible;
             }
-           
+
             HubProxy.On("Login", (valid) =>
             {
                 Dispatcher.InvokeAsync(() =>
@@ -85,7 +85,7 @@ namespace OpenChatClient
             Connection.Start();
         }
 
-        public RoomDTO SelectedRoomDTO = new RoomDTO();
+        public ChatClientInitalizer Initalizer { get; set; }
         public IHubProxy HubProxy { get; set; }
 
         public HubConnection Connection { get; set; }

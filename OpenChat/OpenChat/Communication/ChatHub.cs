@@ -19,8 +19,7 @@ namespace OpenChat.Communication
     {
         public UserRepository UserRepository = new UserRepository();
         public RoomRepository RoomRepository = new RoomRepository();
-
-        public Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
 
         public ChatHub()
         {
@@ -72,13 +71,11 @@ namespace OpenChat.Communication
                 {
                     RoomRepository.JoinRoom(user, roomName);
 
-                    Clients.All($" {ConnectedUsers[user]} is known as {user}");
-
-                    //if (ConnectedUsers.ContainsKey(user))
-                    //{
-                    //    JoinRoom(roomName, user);
-                    //    Clients.Group(roomName).LoadRooms(RoomRepository.FindAllUserRooms(user).ConvertAll(a => (RoomDTO)a));
-                    //}
+                    if (ConnectedUsers.ContainsKey(user))
+                    {
+                        JoinRoom(roomName, user);
+                        Clients.Group(roomName).LoadRooms(RoomRepository.FindAllUserRooms(user).ConvertAll(a => (RoomDTO)a));
+                    }
                 }
             }
         }
@@ -93,7 +90,8 @@ namespace OpenChat.Communication
         {
             if (!ConnectedUsers.ContainsValue(Context.ConnectionId) && !ConnectedUsers.ContainsKey(username))
             {
-                if (UserRepository.LoginUser(username, password) == "404") {
+                if (UserRepository.LoginUser(username, password) == "404")
+                {
                     UserRepository.AddUser(new User(username, password));
                 };
 
