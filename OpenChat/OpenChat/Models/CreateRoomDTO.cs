@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenChatClient.Models
+namespace OpenChat.Models
 {
     public class CreateRoomDTO
     {
         public string Name { get; set; }
-        public List<int> Users { get; set; }
+        public List<string> Users { get; set; }
     }
 }

@@ -52,8 +52,8 @@ namespace OpenChat.Repositories
 
         public void JoinRoom(string username, string roomName)
         {
-            var user = Context.Users.Find(username);
-            Context.Rooms.Find(roomName).Users.Add(user);
+            var room = this.Find(roomName);
+            Context.Users.Find(username).Rooms.Add(room);
             this.Context.SaveChanges();
         }
 

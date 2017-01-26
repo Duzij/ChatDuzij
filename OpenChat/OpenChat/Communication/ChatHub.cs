@@ -36,11 +36,6 @@ namespace OpenChat.Communication
             Clients.Caller.LoadRooms(RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a));
         }
 
-        public void LoadRoomsForRoom(string roomName)
-        {
-            Clients.Group(roomName).LoadRooms();
-        }
-
         public void LoadRoomMessages(string roomName, string authorName)
         {
             List<MessageDTO> output = new List<MessageDTO>();
@@ -65,30 +60,42 @@ namespace OpenChat.Communication
             Clients.Group(RoomName).Notify(RoomName);
         }
 
-        public void CreateRoom(string roomName, List<string> addedUsers)
+        public void CreateRoom(CreateRoomDTO room)
         {
-            RoomRepository.AddRoom(roomName);
-            foreach (var user in addedUsers)
+            var roomName = room.Name;
+            var addedUsers = room.Users;
+            if (RoomRepository.Find(roomName) == null)
             {
-                if (ConnectedUsers.ContainsKey(user))
+                RoomRepository.AddRoom(roomName);
+
+                foreach (var user in addedUsers)
                 {
-                    JoinRoom(roomName, user);
-                    Clients.Client(ConnectedUsers[user]).LoadRooms(user);
+                    RoomRepository.JoinRoom(user, roomName);
+
+                    Clients.All($" {ConnectedUsers[user]} is known as {user}");
+
+                    //if (ConnectedUsers.ContainsKey(user))
+                    //{
+                    //    JoinRoom(roomName, user);
+                    //    Clients.Group(roomName).LoadRooms(RoomRepository.FindAllUserRooms(user).ConvertAll(a => (RoomDTO)a));
+                    //}
                 }
             }
         }
 
         public void JoinRoom(string roomName, string username)
         {
+            //what meens, he is online
             Groups.Add(ConnectedUsers[username], roomName);
-            RoomRepository.JoinRoom(username, roomName);
         }
 
         public void Login(string username, string password)
         {
             if (!ConnectedUsers.ContainsValue(Context.ConnectionId) && !ConnectedUsers.ContainsKey(username))
             {
-                if (UserRepository.LoginUser(username, password) == "404") return;
+                if (UserRepository.LoginUser(username, password) == "404") {
+                    UserRepository.AddUser(new User(username, password));
+                };
 
                 ConnectedUsers.Add(username, Context.ConnectionId);
 

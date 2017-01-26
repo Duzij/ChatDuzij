@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Hubs;
+using Newtonsoft.Json;
 
 namespace OpenChatClient
 {
@@ -13,9 +14,11 @@ namespace OpenChatClient
         public ChatClientInitalizer(string server)
         {
             connection = new HubConnection(server);
-            chat = connection.CreateHubProxy("Chat");
+            chatProxy = connection.CreateHubProxy("Chat");
             connection.Closed += Connection_Closed;
 
+            chatProxy.JsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+            chatProxy.JsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
 
         }
 
@@ -30,7 +33,7 @@ namespace OpenChatClient
             try
             {
                 connection = new HubConnection(Server);
-                chat = connection.CreateHubProxy("chat");
+                chatProxy = connection.CreateHubProxy("chat");
 
                 //client-side logging
                 connection.TraceLevel = TraceLevels.All;
@@ -44,7 +47,7 @@ namespace OpenChatClient
 
         public string Server { get; set; }
         public HubConnection connection { get; set; }
-        public IHubProxy chat { get; set; }
+        public IHubProxy chatProxy { get; set; }
 
         public void Dispose()
         {

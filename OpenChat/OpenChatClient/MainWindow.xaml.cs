@@ -25,7 +25,7 @@ namespace OpenChatClient
             {
                 Initalizer = new ChatClientInitalizer("http://localhost:11878/");
                 Connection = Initalizer.connection;
-                HubProxy = Initalizer.chat;
+                HubProxy = Initalizer.chatProxy;
             }
             catch (Exception)
             {
@@ -51,9 +51,12 @@ namespace OpenChatClient
                 var room = LoadedRooms.First(a => a.RoomName == RoomDTOName);
                 Dispatcher.InvokeAsync(() =>
                 {
+                    SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
                     room.GotNewMessages = true;
                     if (SelectedRoomDTO.RoomName == RoomDTOName)
+                    {
                         ReloadMessageSource();
+                    }
                 });
             });
 
@@ -82,7 +85,7 @@ namespace OpenChatClient
             Connection.Start();
         }
 
-        public RoomDTO SelectedRoomDTO { get; set; }
+        public RoomDTO SelectedRoomDTO = new RoomDTO();
         public IHubProxy HubProxy { get; set; }
 
         public HubConnection Connection { get; set; }
@@ -149,13 +152,11 @@ namespace OpenChatClient
         private void AddRoom(object sender, RoutedEventArgs e)
         {
             var list = HubProxy.Invoke<List<UserDTO>>("LoadUsers", username).Result;
-            CreateRoomWindow win = new CreateRoomWindow(list);
+            CreateRoomWindow win = new CreateRoomWindow(list, username);
             win.ShowDialog();
             if (win.DialogResult == true)
             {
-                List<string> selectedUsers = win.avalibleUsers.Where(b => b.IsSelected).ToList().ConvertAll(a => a.Username);
-                selectedUsers.Add(username);
-                HubProxy.Invoke<List<UserDTO>>("CreateRoom", username, selectedUsers);
+                HubProxy.Invoke("CreateRoom", win.TempRoom);
             }
         }
     }
