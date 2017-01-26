@@ -19,10 +19,19 @@ namespace OpenChat.Communication
     {
         public UserRepository UserRepository = new UserRepository();
         public RoomRepository RoomRepository = new RoomRepository();
-        private static readonly Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
 
         public ChatHub()
         {
+        }
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            if (stopCalled)
+                this.UserRepository.RemoveIndentity(this.Context.ConnectionId);
+            else
+            {
+            }
+            return base.OnDisconnected(stopCalled);
         }
 
         public List<UserDTO> LoadUsers(string usename)
@@ -71,7 +80,7 @@ namespace OpenChat.Communication
                 {
                     RoomRepository.JoinRoom(user, roomName);
 
-                    if (ConnectedUsers.ContainsKey(user))
+                    if (UserRepository.IsUserConnected(user))
                     {
                         JoinRoom(roomName, user);
                         Clients.Group(roomName).LoadRooms(RoomRepository.FindAllUserRooms(user).ConvertAll(a => (RoomDTO)a));
@@ -83,19 +92,20 @@ namespace OpenChat.Communication
         public void JoinRoom(string roomName, string username)
         {
             //what meens, he is online
-            Groups.Add(ConnectedUsers[username], roomName);
+            Groups.Add(UserRepository.GetUserConnectionByUsername(username), roomName);
         }
 
         public void Login(string username, string password)
         {
-            if (!ConnectedUsers.ContainsValue(Context.ConnectionId) && !ConnectedUsers.ContainsKey(username))
+            if (!UserRepository.IsUserConnected(username))
             {
                 if (UserRepository.LoginUser(username, password) == "404")
                 {
+                    //register a new user instantly
                     UserRepository.AddUser(new User(username, password));
                 };
 
-                ConnectedUsers.Add(username, Context.ConnectionId);
+                UserRepository.AddIdentity(username, Context.ConnectionId);
 
                 foreach (var room in RoomRepository.FindAllUserRooms(username))
                 {

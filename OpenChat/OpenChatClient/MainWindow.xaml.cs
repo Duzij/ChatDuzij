@@ -143,7 +143,7 @@ namespace OpenChatClient
             }
             else
             {
-                ErrorValidatoin.Content = "Incorrect username or password";
+                ErrorValidatoin.Content = "User is already connected";
                 this.ErrorValidatoin.Visibility = Visibility.Visible;
                 this.login.Visibility = Visibility.Visible;
             }
@@ -158,6 +158,12 @@ namespace OpenChatClient
             {
                 HubProxy.Invoke("CreateRoom", win.TempRoom);
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Connection.Stop();
+            Initalizer.connection.Stop();
         }
     }
 }

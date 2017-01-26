@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OpenChatClient"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" Closing="Window_Closing">
     <Window.Resources>
         <Style x:Key="CollapsedHeader" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Visibility" Value="Collapsed"></Setter>
