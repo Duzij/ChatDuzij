@@ -15,6 +15,7 @@ namespace OpenChatClient
         public ObservableCollection<MessageDTO> LoadedMessages = new ObservableCollection<MessageDTO>();
         public RoomDTO SelectedRoomDTO = new RoomDTO();
         private string username;
+
         private string RoomDTOName;
 
         public MainWindow()
@@ -136,16 +137,17 @@ namespace OpenChatClient
         {
             if (valid)
             {
-                this.username = LoginTextBox.Text;
-                this.ErrorValidatoin.Visibility = Visibility.Hidden;
-                this.login.Visibility = Visibility.Hidden;
+                username = LoginTextBox.Text;
+                username_lbl.Content = $"Logged as {username}.";
+                ErrorValidatoin.Visibility = Visibility.Hidden;
+                login.Visibility = Visibility.Hidden;
                 await HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
             }
             else
             {
                 ErrorValidatoin.Content = "User is already connected";
-                this.ErrorValidatoin.Visibility = Visibility.Visible;
-                this.login.Visibility = Visibility.Visible;
+                ErrorValidatoin.Visibility = Visibility.Visible;
+                login.Visibility = Visibility.Visible;
             }
         }
 

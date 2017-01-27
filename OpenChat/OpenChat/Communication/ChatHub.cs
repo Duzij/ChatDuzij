@@ -36,7 +36,7 @@ namespace OpenChat.Communication
 
         public List<UserDTO> LoadUsers(string usename)
         {
-            return UserRepository.FindAll().Where(a => a.Username != usename).ToList().ConvertAll(a => (UserDTO)a);
+            return UserRepository.FindAll().ConvertAll(a => (UserDTO)a);
         }
 
         public void LoadRooms(string username)
