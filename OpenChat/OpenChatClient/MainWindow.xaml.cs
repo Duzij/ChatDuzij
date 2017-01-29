@@ -30,8 +30,8 @@ namespace OpenChatClient
             }
             catch (Exception)
             {
-                ErrorValidatoin.Content = "Cannot connect to server. Contact your administrator";
-                ErrorValidatoin.Visibility = Visibility.Visible;
+                //ErrorValidatoin.Content = "Cannot connect to server. Contact your administrator";
+                //ErrorValidatoin.Visibility = Visibility.Visible;
             }
 
             HubProxy.On("Login", (valid) =>
@@ -125,7 +125,7 @@ namespace OpenChatClient
         {
             try
             {
-                await HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Password);
+                //await HubProxy.Invoke("Login", LoginTextBox.Text, PasswordTextBox.Password);
             }
             catch (NullReferenceException ex)
             {
@@ -137,17 +137,17 @@ namespace OpenChatClient
         {
             if (valid)
             {
-                username = LoginTextBox.Text;
-                username_lbl.Content = $"Logged as {username}.";
-                ErrorValidatoin.Visibility = Visibility.Hidden;
-                login.Visibility = Visibility.Hidden;
-                await HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
+                //username = LoginTextBox.Text;
+                //username_lbl.Content = $"Logged as {username}.";
+                //ErrorValidatoin.Visibility = Visibility.Hidden;
+                //login.Visibility = Visibility.Hidden;
+                //await HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
             }
             else
             {
-                ErrorValidatoin.Content = "User is already connected";
-                ErrorValidatoin.Visibility = Visibility.Visible;
-                login.Visibility = Visibility.Visible;
+                //ErrorValidatoin.Content = "User is already connected";
+                //ErrorValidatoin.Visibility = Visibility.Visible;
+                //login.Visibility = Visibility.Visible;
             }
         }
 

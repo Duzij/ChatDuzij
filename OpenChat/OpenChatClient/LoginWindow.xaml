@@ -1,0 +1,38 @@
+﻿<Window x:Class="OpenChatClient.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:OpenChatClient.ViewModel"
+        xmlns:local="clr-namespace:OpenChatClient"
+        mc:Ignorable="d"
+        Title="LoginWindow" Height="300" Width="300">
+    <Grid DataContext="{Binding LoginViewModel, Source={StaticResource Locator}}" x:Name="login">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Content="Username:" Grid.Row="1" Grid.Column="1" />
+        <TextBox Grid.Column="1" Text="{Binding username}" Grid.Row="2"></TextBox>
+        <Label Content="Password:" Grid.Row="3" Grid.Column="1" />
+        <PasswordBox Grid.Column="1" Grid.Row="4"></PasswordBox>
+
+        <Button x:Name="LoginBtn" Grid.Column="1" Margin="0 5 0 0" Grid.Row="5" Content="LOGIN"
+                Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=PasswordBox}"
+                IsDefault="True" />
+
+        <Label x:Name="ErrorValidatoin" Visibility="Hidden" Content=" " Grid.Row="6" Grid.Column="1" />
+    </Grid>
+
+</Window>
