@@ -1,32 +1,135 @@
-﻿<Window x:Class="ChatClient.MainWindow"
+﻿<Controls:MetroWindow x:Class="ChatClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatClient"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:ignore="http://www.galasoft.ch/ignore"
         mc:Ignorable="d ignore"
-        Height="300"
-        Width="300"
-        Title="MVVM Light Application"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
-    
+        Height="500"
+        Width="700"
+        SaveWindowPosition="True"
+        Title="OpenChat Client"
+        DataContext="{Binding Main, Source={StaticResource Locator}}" SizeToContent="Width" WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Skins/MainSkin.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <Style x:Key="CollapsedHeader" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed"></Setter>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <local:MessageAlignConverter x:Key="MsgAlign">
+        </local:MessageAlignConverter>
     </Window.Resources>
 
-    <Grid x:Name="LayoutRoot">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
-        <TextBlock FontSize="36"
-                   FontWeight="Bold"
-                   Foreground="Purple"
-                   Text="{Binding WelcomeTitle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   TextWrapping="Wrap" />
 
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
+
+            <ListView  Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
+                        <GridView.Columns>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Height="20" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
+                                            <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Content/new-messages-icon-small.png"></Image>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <Button Content="Add room" Grid.Row="2" Margin="2" Click="AddRoom"></Button>
+        </Grid>
+
+        <Label Grid.Row="0" x:Name="username_lbl" Content="{Binding Username}"></Label>
+
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ListView ItemsSource="{Binding LoadedMessages}" BorderThickness="0" Margin="5" x:Name="ChatView">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Style.Resources>
+                            <LinearGradientBrush x:Key="ListItemHoverFill" EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="Transparent" Offset="0" />
+                                <GradientStop Color="Transparent" Offset="1" />
+                            </LinearGradientBrush>
+                        </Style.Resources>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border CornerRadius="0" SnapsToDevicePixels="True"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}">
+                                        <Border Name="InnerBorder" CornerRadius="1" BorderThickness="0">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition MaxHeight="15" />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <Rectangle Name="UpperHighlight" Visibility="Collapsed" Fill="Transparent" />
+                                                <ContentPresenter Grid.RowSpan="2"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </Grid>
+                                        </Border>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource ListItemHoverFill}" />
+                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                            <Setter TargetName="UpperHighlight" Property="Visibility" Value="Visible" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Stretch" TextAlignment="{Binding MyMessage, Converter={StaticResource MsgAlign}}" Text="{Binding Text}" Margin="0 4 10 4" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="1" Margin="5 0 5 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="MessageTextBox" Grid.Column="0" Padding="5"></TextBox>
+                <Button x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Click="sendbnn_Click"></Button>
+            </Grid>
+        </Grid>
     </Grid>
-</Window>
+</Controls:MetroWindow>
