@@ -40,6 +40,7 @@ namespace OpenChatClient.ViewModel
 
         public void OnLoginCommand(object commandParameter)
         {
+
             var password = ((PasswordBox)commandParameter).Password;
             var username = Username;
         }
