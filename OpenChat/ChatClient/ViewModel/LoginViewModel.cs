@@ -17,7 +17,6 @@ namespace OpenChatClient.ViewModel
 
         public LoginViewModel()
         {
-            MyCommand = new RelayCommand<object>(OnLoginCommand);
         }
 
         public string Username
@@ -32,15 +31,16 @@ namespace OpenChatClient.ViewModel
             set { _password = value; }
         }
 
-        public RelayCommand<object> MyCommand
+        public RelayCommand<object> LoginCommand => new RelayCommand<object>(OnLoginCommand);
+        public RelayCommand SendMsgCommand => new RelayCommand(SendMessageCommand);
+
+        public void SendMessageCommand()
         {
-            get;
-            private set;
+            //TODO send
         }
 
         public void OnLoginCommand(object commandParameter)
         {
-
             var password = ((PasswordBox)commandParameter).Password;
             var username = Username;
         }

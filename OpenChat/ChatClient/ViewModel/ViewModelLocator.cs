@@ -40,6 +40,7 @@ namespace ChatClient.ViewModel
             }
 
             SimpleIoc.Default.Register<LoginViewModel>();
+            SimpleIoc.Default.Register<CreateRoomViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
         }
 
@@ -64,6 +65,15 @@ namespace ChatClient.ViewModel
                 return ServiceLocator.Current.GetInstance<LoginViewModel>();
             }
         }
+
+        public CreateRoomViewModel CreateRoom
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<CreateRoomViewModel>();
+            }
+        }
+
 
         /// <summary>
         /// Cleans up all the resources.
