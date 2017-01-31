@@ -99,7 +99,15 @@
     <Compile Include="Model\DataService.cs" />
     <Compile Include="Model\IChatClientInitalizer.cs" />
     <Compile Include="Model\IDataService.cs" />
-    <Compile Include="Model\ChatClientInitalizer.cs" />
+    <Compile Include="Design\ChatClientInitalizer.cs" />
+    <Compile Include="Model\ChatDbContext.cs" />
+    <Compile Include="Model\CreateRoomDTO.cs" />
+    <Compile Include="Model\Message.cs" />
+    <Compile Include="Model\MessageDTO.cs" />
+    <Compile Include="Model\Room.cs" />
+    <Compile Include="Model\RoomDTO.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserDTO.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
