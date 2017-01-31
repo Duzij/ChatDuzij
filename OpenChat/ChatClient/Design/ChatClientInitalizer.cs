@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ChatClient.Model;
 
 namespace OpenChatClient
 {
-    public class ChatClientInitalizer
+    public class ChatClientInitalizer : IChatClientInitalizer
     {
         public ChatClientInitalizer(string server)
         {
@@ -18,7 +19,6 @@ namespace OpenChatClient
 
             chatProxy.JsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
             chatProxy.JsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-
         }
 
         private void Connection_Closed()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatClient.Model
 {
-    class IChatClientInitalizer
+    public class IChatClientInitalizer
     {
     }
 }
