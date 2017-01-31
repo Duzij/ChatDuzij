@@ -41,7 +41,7 @@
             </Grid.RowDefinitions>
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
-            <ListView  Margin="2" Name="Contacts" Grid.Row="1" MouseDoubleClick="Contacts_MouseDoubleClick">
+            <ListView  Margin="2" Name="Contacts" Grid.Row="1">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
                         <GridView.Columns>
@@ -50,7 +50,7 @@
                                     <DataTemplate>
                                         <StackPanel Height="20" Orientation="Horizontal">
                                             <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
-                                            <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Content/new-messages-icon-small.png"></Image>
+                                            <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Resources/new-messages-icon-small.png"></Image>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -60,7 +60,7 @@
                 </ListView.View>
             </ListView>
 
-            <Button Content="Add room" Grid.Row="2" Margin="2" Click="AddRoom"></Button>
+            <Button Content="Add room" Grid.Row="2" Margin="2" Command="{Binding AddRoomCommand}"></Button>
         </Grid>
 
         <Label Grid.Row="0" x:Name="username_lbl" Content="{Binding Username}"></Label>
@@ -128,7 +128,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBox x:Name="MessageTextBox" Grid.Column="0" Padding="5"></TextBox>
-                <Button x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Click="sendbnn_Click"></Button>
+                <Button x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Command="{Binding SendMessageCommand}"></Button>
             </Grid>
         </Grid>
     </Grid>
