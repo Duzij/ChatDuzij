@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using ChatClient.Model;
 using OpenChatClient.ViewModel;
+using OpenChatClient;
 
 namespace ChatClient.ViewModel
 {
@@ -32,7 +33,7 @@ namespace ChatClient.ViewModel
 
             if (ViewModelBase.IsInDesignModeStatic)
             {
-                SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
+                SimpleIoc.Default.Register<IChatClientService, Design.DesignDataService>();
             }
             else
             {

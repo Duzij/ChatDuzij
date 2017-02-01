@@ -6,17 +6,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.AspNet.SignalR.Client;
+using System.Windows.Threading;
 
 namespace OpenChatClient.ViewModel
 {
     public class LoginViewModel : ViewModelBase
     {
+        private readonly IChatClientService init;
+
         private string _username;
 
         private string _password;
 
         public LoginViewModel()
         {
+            init = new ChatClientSevice("http://localhost:11878/");
+
+            init.chatProxy.On<bool>("Login", (valid) =>
+                {
+                    Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+                    {
+                        Login(valid);
+                    });
+                });
+        }
+
+        private void Login(bool valid)
+        {
+
         }
 
         public string Username
