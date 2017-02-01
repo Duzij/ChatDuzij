@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ChatClient.Model;
+using OpenChatClient.Models;
+using System.Windows.Threading;
 
 namespace OpenChatClient
 {
-    public class ChatClientInitalizer : IChatClientInitalizer
+    public class ChatClientSevice : IChatClientService
     {
-        public ChatClientInitalizer(string server)
+        public ChatClientSevice(string server)
         {
             connection = new HubConnection(server);
             chatProxy = connection.CreateHubProxy("Chat");
@@ -27,7 +29,9 @@ namespace OpenChatClient
                 this.connection.Dispose();
         }
 
-        public ChatClientInitalizer()
+        public List<RoomDTO> LoadedRooms { get; set; }
+
+        public ChatClientSevice()
         {
             try
             {

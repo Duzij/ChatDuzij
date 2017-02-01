@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatClient.Model
+namespace ChatClient.Design
 {
-    public class IChatClientInitalizer
+    public class DesignChatClientSevice
     {
     }
 }
