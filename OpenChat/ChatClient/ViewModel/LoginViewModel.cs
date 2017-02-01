@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Threading;
+using ChatClient;
+using Microsoft.AspNet.SignalR.Client.Hubs;
+using OpenChatClient.Models;
 
 namespace OpenChatClient.ViewModel
 {
@@ -32,11 +36,6 @@ namespace OpenChatClient.ViewModel
                 });
         }
 
-        private void Login(bool valid)
-        {
-
-        }
-
         public string Username
         {
             get { return _username; }
@@ -50,17 +49,30 @@ namespace OpenChatClient.ViewModel
         }
 
         public RelayCommand<object> LoginCommand => new RelayCommand<object>(OnLoginCommand);
-        public RelayCommand SendMsgCommand => new RelayCommand(SendMessageCommand);
 
-        public void SendMessageCommand()
+        public async void OnLoginCommand(object commandParameter)
         {
-            //TODO send
+            try
+            {
+                await init.chatProxy.Invoke("Login", Username, ((PasswordBox)commandParameter).Password);
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        public void OnLoginCommand(object commandParameter)
+        private void Login(bool valid)
         {
-            var password = ((PasswordBox)commandParameter).Password;
-            var username = Username;
+            if (valid)
+            {
+                var win = new MainWindow();
+                win.ShowDialog();
+            }
+            else
+            {
+                //todo validation label
+            }
         }
     }
 }

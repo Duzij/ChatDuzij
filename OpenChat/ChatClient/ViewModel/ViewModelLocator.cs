@@ -31,14 +31,14 @@ namespace ChatClient.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            if (ViewModelBase.IsInDesignModeStatic)
-            {
-                SimpleIoc.Default.Register<IChatClientService, Design.DesignDataService>();
-            }
-            else
-            {
-                SimpleIoc.Default.Register<IDataService, DataService>();
-            }
+            //if (ViewModelBase.IsInDesignModeStatic)
+            //{
+            //    SimpleIoc.Default.Register<IChatClientService, Design.DesignChatClientSevice>();
+            //}
+            //else
+            //{
+            SimpleIoc.Default.Register<IDataService, ChatClientSevice>();
+            //}
 
             SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<CreateRoomViewModel>();
@@ -74,7 +74,6 @@ namespace ChatClient.ViewModel
                 return ServiceLocator.Current.GetInstance<CreateRoomViewModel>();
             }
         }
-
 
         /// <summary>
         /// Cleans up all the resources.
