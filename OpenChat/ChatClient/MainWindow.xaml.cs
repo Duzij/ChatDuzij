@@ -6,7 +6,7 @@ namespace ChatClient
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow 
+    public partial class MainWindow
     {
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -15,11 +15,6 @@ namespace ChatClient
         {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
-        }
-
-        private void Contacts_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-
         }
     }
 }

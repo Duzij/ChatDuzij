@@ -114,10 +114,10 @@
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MessageAlignConverter.cs" />
-    <Compile Include="Model\DataItem.cs" />
-    <Compile Include="Model\DataService.cs" />
-    <Compile Include="Model\IDataService.cs" />
-    <Compile Include="Design\ChatClientInitalizer.cs" />
+    <Compile Include="Model\Test\DataItem.cs" />
+    <Compile Include="Model\Test\DataService.cs" />
+    <Compile Include="Model\Test\IDataService.cs" />
+    <Compile Include="Model\ChatClientService.cs" />
     <Compile Include="Model\ChatDbContext.cs" />
     <Compile Include="Model\DTOs\CreateRoomDTO.cs" />
     <Compile Include="Model\Message.cs" />
