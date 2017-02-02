@@ -107,10 +107,10 @@ namespace OpenChat.Communication
 
                 UserRepository.AddIdentity(username, Context.ConnectionId);
 
-                foreach (var room in RoomRepository.FindAllUserRooms(username))
-                {
-                    JoinRoom(room.RoomName, username);
-                }
+                //foreach (var room in RoomRepository.FindAllUserRooms(username))
+                //{
+                //    JoinRoom(room.RoomName, username);
+                //}
 
                 Clients.Caller.Login(true);
             }
