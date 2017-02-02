@@ -14,10 +14,10 @@ using OpenChatClient;
 
 namespace OpenChatClient
 {
-    public class ChatClientSevice : IChatClientService
+    public class ChatClientService : IChatClientService
     {
         [PreferredConstructor]
-        public ChatClientSevice(string server)
+        public ChatClientService(string server)
         {
             try
             {
@@ -29,7 +29,6 @@ namespace OpenChatClient
                 connection.TraceWriter = Console.Out;
                 chatProxy.JsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
                 chatProxy.JsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-
             }
             catch (Exception ex)
             {
@@ -37,7 +36,7 @@ namespace OpenChatClient
             }
         }
 
-        public ChatClientSevice()
+        public ChatClientService()
         {
             try
             {
@@ -57,6 +56,7 @@ namespace OpenChatClient
         public List<RoomDTO> LoadedRooms { get; set; }
 
         public string Server { get; set; }
+        public string Username { get; set; }
 
         public HubConnection connection { get; set; }
 

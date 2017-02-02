@@ -10,9 +10,14 @@ namespace ChatDuzijCore.Repositories
     {
         public ChatDbContext Context = new ChatDbContext();
 
-        public Room Find(string name)
+        public bool Exist(string username)
         {
-            return Context.Rooms.Find(name);
+            return Context.Users.Any(a => a.Username == username);
+        }
+
+        public User Find(string name)
+        {
+            return Context.Users.Find(name);
         }
 
         public List<User> FindAll()

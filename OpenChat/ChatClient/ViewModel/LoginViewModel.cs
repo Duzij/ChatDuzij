@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Threading;
 using ChatClient;
+using ChatClient.ViewModel;
 using Microsoft.AspNet.SignalR.Client.Hubs;
 using OpenChatClient.Models;
 
@@ -18,22 +19,14 @@ namespace OpenChatClient.ViewModel
     public class LoginViewModel : ViewModelBase
     {
         private readonly IChatClientService init;
-        public IHubProxy HubProxy { get; set; }
-        public HubConnection Connection { get; set; }
-
         private string _username;
-
         private string _password;
 
-        public LoginViewModel()
+        public LoginViewModel(IChatClientService service)
         {
-            init = new ChatClientSevice("http://localhost:11878/");
-            Connection = init.connection;
-            HubProxy = init.chatProxy;
-
-            HubProxy.On("Login", (valid) => {  this.Login(valid); });
-
-            Connection.Start();
+            init = service;
+            init.chatProxy.On("Login", (valid) => { this.Login(valid); });
+            init.connection.Start();
         }
 
         public string Username
@@ -66,8 +59,13 @@ namespace OpenChatClient.ViewModel
         {
             if (valid)
             {
-                var win = new MainWindow();
-                win.ShowDialog();
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    init.Username = Username;
+                    var win = new MainWindow();
+                    MessengerInstance.Send<string>(Username);
+                    win.ShowDialog();
+                });
             }
             else
             {

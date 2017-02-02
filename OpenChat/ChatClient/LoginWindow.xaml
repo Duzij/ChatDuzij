@@ -5,11 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:ignore="http://www.galasoft.ch/ignore"
-        mc:Ignorable="d ignore"
-        Height="300"
-        Width="300"
-        Title="Login"
-        DataContext="{Binding Login, Source={StaticResource Locator}}">
+        mc:Ignorable="d ignore" Height="300" Width="300" Title="Login"
+        DataContext="{Binding Login, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.RowDefinitions>
