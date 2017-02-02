@@ -18,6 +18,8 @@ namespace OpenChatClient.ViewModel
     public class LoginViewModel : ViewModelBase
     {
         private readonly IChatClientService init;
+        public IHubProxy HubProxy { get; set; }
+        public HubConnection Connection { get; set; }
 
         private string _username;
 
@@ -26,14 +28,12 @@ namespace OpenChatClient.ViewModel
         public LoginViewModel()
         {
             init = new ChatClientSevice("http://localhost:11878/");
+            Connection = init.connection;
+            HubProxy = init.chatProxy;
 
-            init.chatProxy.On<bool>("Login", (valid) =>
-                {
-                    Dispatcher.CurrentDispatcher.InvokeAsync(() =>
-                    {
-                        Login(valid);
-                    });
-                });
+            HubProxy.On("Login", (valid) => {  this.Login(valid); });
+
+            Connection.Start();
         }
 
         public string Username

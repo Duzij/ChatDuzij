@@ -30,7 +30,6 @@ namespace OpenChatClient
                 chatProxy.JsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
                 chatProxy.JsonSerializer.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
 
-                connection.Start();
             }
             catch (Exception ex)
             {
