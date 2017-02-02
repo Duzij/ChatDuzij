@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Specialized;
+using System.Windows;
 using ChatClient.ViewModel;
 
 namespace ChatClient
@@ -15,6 +16,17 @@ namespace ChatClient
         {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
+
+            ((INotifyCollectionChanged)ChatView.Items).CollectionChanged += new NotifyCollectionChangedEventHandler(ChatViewSourceChanged);
+        }
+
+        private void ChatViewSourceChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                ChatView.Items.MoveCurrentToLast();
+                ChatView.ScrollIntoView(ChatView.Items.CurrentItem);
+            }
         }
     }
 }

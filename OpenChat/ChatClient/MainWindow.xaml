@@ -7,11 +7,8 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:ignore="http://www.galasoft.ch/ignore"
         mc:Ignorable="d ignore"
-        Height="500"
-        Width="700"
-        SaveWindowPosition="True"
-        Title="OpenChat Client"
-        DataContext="{Binding Main, Source={StaticResource Locator}}" SizeToContent="Width" WindowStartupLocation="CenterScreen">
+        Title="OpenChat Client" Height="500" Width="700"
+        DataContext="{Binding Main, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style x:Key="CollapsedHeader" TargetType="{x:Type GridViewColumnHeader}">
@@ -32,16 +29,15 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-
-        <Grid Grid.Column="1" Grid.Row="1">
+        <Grid Grid.RowSpan="2" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="8*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
-            <ListView  Margin="2" Name="Contacts" Grid.Row="1">
+            <ListView  Margin="2" Name="Contacts" Grid.Row="1" ItemsSource="{Binding Path=Rooms}" SelectedItem="{Binding SelectedRoom}">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
                         <GridView.Columns>
@@ -60,17 +56,17 @@
                 </ListView.View>
             </ListView>
 
-            <Button Content="Add room" Grid.Row="2" Margin="2" Command="{Binding AddRoomCommand}"></Button>
+            <Button Content="Add room" Grid.Row="2" Margin="5,8,5,5" Command="{Binding AddRoomCommand}"></Button>
         </Grid>
 
-        <Label Grid.Row="0" x:Name="username_lbl" Content="{Binding Username}"></Label>
+        <Label Grid.Row="0" Content="{Binding Username}"></Label>
 
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <ListView ItemsSource="{Binding LoadedMessages}" BorderThickness="0" Margin="5" x:Name="ChatView">
+            <ListView ItemsSource="{Binding Messages}" BorderThickness="0" Margin="5" x:Name="ChatView">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Style.Resources>
@@ -115,7 +111,6 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
-
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock HorizontalAlignment="Stretch" TextAlignment="{Binding MyMessage, Converter={StaticResource MsgAlign}}" Text="{Binding Text}" Margin="0 4 10 4" />
@@ -127,8 +122,8 @@
                     <ColumnDefinition Width="7*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="MessageTextBox" Grid.Column="0" Padding="5"></TextBox>
-                <Button x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Command="{Binding SendMessageCommand}"></Button>
+                <TextBox VerticalAlignment="Bottom" x:Name="MessageTextBox" Grid.Column="0" Padding="5"></TextBox>
+                <Button VerticalAlignment="Bottom" x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Command="{Binding SendMessageCommand}" Height="34" Margin="2,0,0,0"></Button>
             </Grid>
         </Grid>
     </Grid>

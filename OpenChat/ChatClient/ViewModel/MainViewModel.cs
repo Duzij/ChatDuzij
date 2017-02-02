@@ -2,6 +2,14 @@
 using ChatClient.Model;
 using GalaSoft.MvvmLight.Command;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Threading;
+using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client.Hubs;
+using OpenChatClient;
+using OpenChatClient.Models;
 
 namespace ChatClient.ViewModel
 {
@@ -13,151 +21,94 @@ namespace ChatClient.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private readonly IDataService _dataService;
+        private readonly IChatClientService chatService;
+        private ObservableCollection<RoomDTO> rooms;
+        private ObservableCollection<MessageDTO> messages;
+        private RoomDTO selectedRoom;
+        private string username;
 
-        /// <summary>
-        /// The <see cref="WelcomeTitle" /> property's name.
-        /// </summary>
-        public const string WelcomeTitlePropertyName = "WelcomeTitle";
+        public MainViewModel(IChatClientService chatService, string username)
+        {
+            this.chatService = chatService;
+            Username = MessengerInstance.;
+
+            chatService.chatProxy.On("ReLoadRooms", (valid) =>
+            {
+                chatService.chatProxy.Invoke<List<RoomDTO>>("LoadRooms", Username);
+            });
+
+            chatService.chatProxy.On("Notify", (string RoomDTOName) =>
+            {
+                var room = Rooms.First(a => a.RoomName == RoomDTOName);
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    room.GotNewMessages = true;
+                    if (SelectedRoom.RoomName == RoomDTOName)
+                    {
+                        ReloadMessageSource();
+                    }
+                });
+            });
+
+            chatService.chatProxy.On("LoadRoomMessages", (List<MessageDTO> msgs) =>
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Messages = new ObservableCollection<MessageDTO>(msgs);
+                });
+            });
+
+            chatService.chatProxy.On("LoadRooms", (List<RoomDTO> rooms) =>
+            {
+                Rooms = new ObservableCollection<RoomDTO>(rooms);
+            });
+
+            chatService.chatProxy.Invoke("LoadRooms", Username);
+        }
+
+        public ObservableCollection<MessageDTO> Messages
+        {
+            get { return messages; }
+            set { messages = value; }
+        }
+
+        public ObservableCollection<RoomDTO> Rooms
+        {
+            get { return rooms; }
+            set { rooms = value; }
+        }
+
+        public RoomDTO SelectedRoom
+        {
+            get { return selectedRoom; }
+            set { selectedRoom = value; }
+        }
+
+        public string Username
+        {
+            get { return username; }
+            set { username = value; }
+        }
 
         public RelayCommand AddRoomCommand => new RelayCommand(AddRoom);
+
+        public void ReloadMessageSource()
+        {
+            chatService.chatProxy.Invoke<ObservableCollection<MessageDTO>>("LoadRoomMessages", SelectedRoom.RoomName, Username);
+        }
 
         private void AddRoom()
         {
             //TODO add room
         }
-
-        private string _welcomeTitle = string.Empty;
-
-        /// <summary>
-        /// Gets the WelcomeTitle property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string WelcomeTitle
-        {
-            get
-            {
-                return _welcomeTitle;
-            }
-            set
-            {
-                Set(ref _welcomeTitle, value);
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
-        public MainViewModel(IDataService dataService)
-        {
-            _dataService = dataService;
-            _dataService.GetData(
-                (item, error) =>
-                {
-                    if (error != null)
-                    {
-                        // Report error here
-                        return;
-                    }
-
-                    WelcomeTitle = item.Title;
-                });
-        }
-
-        ////public override void Cleanup()
-        ////{
-        ////    // Clean up if needed
-
-        ////    base.Cleanup();
-        ////}
     }
 }
 
-
-
-
-
-
-
-
-
-
 //public partial class MainWindow : Window
 //{
-//    public ObservableCollection<RoomDTO> LoadedRooms = new ObservableCollection<RoomDTO>();
-//    public ObservableCollection<MessageDTO> LoadedMessages = new ObservableCollection<MessageDTO>();
-//    public RoomDTO SelectedRoomDTO = new RoomDTO();
 //    private string username;
 
 //    private string RoomDTOName;
-
-//    public MainWindow()
-//    {
-//        DataContext = this;
-//        InitializeComponent();
-//        try
-//        {
-//            Initalizer = new ChatClientInitalizer("http://localhost:11878/");
-//            Connection = Initalizer.connection;
-//            HubProxy = Initalizer.chatProxy;
-//        }
-//        catch (Exception)
-//        {
-//            //ErrorValidatoin.Content = "Cannot connect to server. Contact your administrator";
-//            //ErrorValidatoin.Visibility = Visibility.Visible;
-//        }
-
-//        HubProxy.On("Login", (valid) =>
-//        {
-//            Dispatcher.InvokeAsync(() =>
-//            {
-//                this.LoginVisibility(valid);
-//            });
-//        });
-
-//        HubProxy.On("ReLoadRooms", (valid) =>
-//        {
-//            HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
-//        });
-
-//        HubProxy.On("Notify", (string RoomDTOName) =>
-//        {
-//            var room = LoadedRooms.First(a => a.RoomName == RoomDTOName);
-//            Dispatcher.InvokeAsync(() =>
-//            {
-//                SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
-//                room.GotNewMessages = true;
-//                if (SelectedRoomDTO.RoomName == RoomDTOName)
-//                {
-//                    ReloadMessageSource();
-//                }
-//            });
-//        });
-
-//        HubProxy.On("LoadRoomMessages", (List<MessageDTO> msgs) =>
-//        {
-//            Dispatcher.InvokeAsync(() =>
-//            {
-//                this.LoadedMessages = new ObservableCollection<MessageDTO>(msgs);
-//                this.ChatView.ItemsSource = msgs;
-//                ChatView.Items.MoveCurrentToLast();
-//                ChatView.ScrollIntoView(ChatView.Items.CurrentItem);
-//            });
-//        });
-
-//        HubProxy.On("LoadRooms", (List<RoomDTO> rooms) =>
-//        {
-//            Dispatcher.InvokeAsync(() =>
-//            {
-//                Contacts.ItemsSource = rooms;
-//                this.LoadedRooms = new ObservableCollection<RoomDTO>(rooms);
-//            });
-//        });
-
-//        Connection.Error += ex => Console.WriteLine("SignalR error: {0}", ex.Message);
-
-//        Connection.Start();
-//    }
 
 //    public ChatClientInitalizer Initalizer { get; set; }
 //    public IHubProxy HubProxy { get; set; }
@@ -214,7 +165,7 @@ namespace ChatClient.ViewModel
 //            //username_lbl.Content = $"Logged as {username}.";
 //            //ErrorValidatoin.Visibility = Visibility.Hidden;
 //            //login.Visibility = Visibility.Hidden;
-//            //await HubProxy.Invoke<List<RoomDTO>>("LoadRooms", username);
+//
 //        }
 //        else
 //        {
@@ -235,9 +186,5 @@ namespace ChatClient.ViewModel
 //        }
 //    }
 
-//    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-//    {
-//        Connection.Stop();
-//        Initalizer.connection.Stop();
-//    }
+//
 //}

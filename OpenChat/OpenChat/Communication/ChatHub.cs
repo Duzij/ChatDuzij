@@ -97,20 +97,23 @@ namespace OpenChat.Communication
 
         public void Login(string username, string password)
         {
-            if (!UserRepository.IsUserConnected(username))
+            if (!UserRepository.IsUserConnected(username) && UserRepository.Exist(username))
             {
                 if (UserRepository.LoginUser(username, password) == "404")
                 {
                     //register a new user instantly
                     UserRepository.AddUser(new User(username, password));
-                };
+                }
 
                 UserRepository.AddIdentity(username, Context.ConnectionId);
 
-                //foreach (var room in RoomRepository.FindAllUserRooms(username))
-                //{
-                //    JoinRoom(room.RoomName, username);
-                //}
+                if (UserRepository.Find(username).Rooms != null)
+                {
+                    foreach (var room in RoomRepository.FindAllUserRooms(username))
+                    {
+                        JoinRoom(room.RoomName, username);
+                    }
+                }
 
                 Clients.Caller.Login(true);
             }

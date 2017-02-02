@@ -30,19 +30,10 @@ namespace ChatClient.ViewModel
         static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            //if (ViewModelBase.IsInDesignModeStatic)
-            //{
-            //    SimpleIoc.Default.Register<IChatClientService, Design.DesignChatClientSevice>();
-            //}
-            //else
-            //{
-            SimpleIoc.Default.Register<IDataService, ChatClientSevice>();
-            //}
-
+            SimpleIoc.Default.Register<IChatClientService>(() => new ChatClientService("http://localhost:11878/"));
             SimpleIoc.Default.Register<LoginViewModel>();
-            SimpleIoc.Default.Register<CreateRoomViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<CreateRoomViewModel>();
         }
 
         /// <summary>
@@ -59,27 +50,16 @@ namespace ChatClient.ViewModel
             }
         }
 
-        public LoginViewModel Login
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<LoginViewModel>();
-            }
-        }
-
-        public CreateRoomViewModel CreateRoom
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<CreateRoomViewModel>();
-            }
-        }
+        public IChatClientService ChatService => ServiceLocator.Current.GetInstance<ChatClientService>("http://localhost:11878/");
+        public LoginViewModel Login => ServiceLocator.Current.GetInstance<LoginViewModel>();
+        public CreateRoomViewModel CreateRoom => ServiceLocator.Current.GetInstance<CreateRoomViewModel>();
 
         /// <summary>
         /// Cleans up all the resources.
         /// </summary>
         public static void Cleanup()
         {
+            ServiceLocator.Current.GetInstance<IChatClientService>().connection.Stop();
         }
     }
 }
