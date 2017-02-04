@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.AspNet.SignalR.Client.Hubs;
 using OpenChatClient;
@@ -22,15 +23,20 @@ namespace ChatClient.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly IChatClientService chatService;
-        private ObservableCollection<RoomDTO> rooms;
-        private ObservableCollection<MessageDTO> messages;
-        private RoomDTO selectedRoom;
-        private string username;
+        private ObservableCollection<MessageDTO> _messagers = new ObservableCollection<MessageDTO>();
+        private RoomDTO _selectedRoom = new RoomDTO();
+        private string _username = string.Empty;
+        private ObservableCollection<RoomDTO> _Rooms = new ObservableCollection<RoomDTO>();
 
-        public MainViewModel(IChatClientService chatService, string username)
+        public MainViewModel(IChatClientService chatService)
         {
             this.chatService = chatService;
-            Username = MessengerInstance.;
+
+            Messenger.Default.Register<NotificationMessage<string>>(this, (usernameMsg) =>
+            {
+                Username = usernameMsg.Content;
+                chatService.chatProxy.Invoke("LoadRooms", Username);
+            });
 
             chatService.chatProxy.On("ReLoadRooms", (valid) =>
             {
@@ -45,7 +51,7 @@ namespace ChatClient.ViewModel
                     room.GotNewMessages = true;
                     if (SelectedRoom.RoomName == RoomDTOName)
                     {
-                        ReloadMessageSource();
+                        LoadMessages();
                     }
                 });
             });
@@ -62,37 +68,36 @@ namespace ChatClient.ViewModel
             {
                 Rooms = new ObservableCollection<RoomDTO>(rooms);
             });
-
-            chatService.chatProxy.Invoke("LoadRooms", Username);
-        }
-
-        public ObservableCollection<MessageDTO> Messages
-        {
-            get { return messages; }
-            set { messages = value; }
         }
 
         public ObservableCollection<RoomDTO> Rooms
         {
-            get { return rooms; }
-            set { rooms = value; }
+            get { return _Rooms; }
+            set { Set(ref _Rooms, value); }
+        }
+
+        public ObservableCollection<MessageDTO> Messages
+        {
+            get { return _messagers; }
+            set { Set(ref _messagers, value); }
         }
 
         public RoomDTO SelectedRoom
         {
-            get { return selectedRoom; }
-            set { selectedRoom = value; }
+            get { return _selectedRoom; }
+            set { Set(ref _selectedRoom, value); }
         }
 
         public string Username
         {
-            get { return username; }
-            set { username = value; }
+            get { return _username; }
+            set { Set(ref _username, value); }
         }
 
         public RelayCommand AddRoomCommand => new RelayCommand(AddRoom);
+        public RelayCommand LoadRoomMessages => new RelayCommand(LoadMessages);
 
-        public void ReloadMessageSource()
+        public void LoadMessages()
         {
             chatService.chatProxy.Invoke<ObservableCollection<MessageDTO>>("LoadRoomMessages", SelectedRoom.RoomName, Username);
         }

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ChatClient"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:ignore="http://www.galasoft.ch/ignore"
+        xmlns:viewModel="clr-namespace:ChatClient.ViewModel"
         mc:Ignorable="d ignore"
         Title="OpenChat Client" Height="500" Width="700"
         DataContext="{Binding Main, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen">
@@ -37,7 +38,7 @@
             </Grid.RowDefinitions>
             <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"></Label>
 
-            <ListView  Margin="2" Name="Contacts" Grid.Row="1" ItemsSource="{Binding Path=Rooms}" SelectedItem="{Binding SelectedRoom}">
+            <ListView MouseDoubleClick="Contacts_OnMouseDoubleClick" Margin="2" Name="Contacts" Grid.Row="1" ItemsSource="{Binding Rooms, Mode=OneWay}" SelectedItem="{Binding SelectedRoom, Mode=TwoWay}">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
                         <GridView.Columns>
@@ -45,6 +46,9 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Height="20" Orientation="Horizontal">
+                                            <StackPanel.InputBindings>
+                                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding LoadRoomMessages}"></MouseBinding>
+                                            </StackPanel.InputBindings>
                                             <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
                                             <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Resources/new-messages-icon-small.png"></Image>
                                         </StackPanel>
