@@ -11,6 +11,7 @@ using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Threading;
 using ChatClient;
 using ChatClient.ViewModel;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.AspNet.SignalR.Client.Hubs;
 using OpenChatClient.Models;
 
@@ -61,10 +62,9 @@ namespace OpenChatClient.ViewModel
             {
                 Application.Current.Dispatcher.Invoke((Action)delegate
                 {
-                    init.Username = Username;
                     var win = new MainWindow();
-                    MessengerInstance.Send<string>(Username);
-                    win.ShowDialog();
+                    win.Show();
+                    Messenger.Default.Send(new NotificationMessage<string>(Username, "token"));
                 });
             }
             else
