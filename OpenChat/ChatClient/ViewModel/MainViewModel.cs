@@ -23,10 +23,11 @@ namespace ChatClient.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly IChatClientService chatService;
-        private ObservableCollection<MessageDTO> _messagers = new ObservableCollection<MessageDTO>();
-        private RoomDTO _selectedRoom = new RoomDTO();
-        private string _username = string.Empty;
-        private ObservableCollection<RoomDTO> _Rooms = new ObservableCollection<RoomDTO>();
+        private ObservableCollection<MessageDTO> messagers = new ObservableCollection<MessageDTO>();
+        private ObservableCollection<RoomDTO> rooms = new ObservableCollection<RoomDTO>();
+        private RoomDTO selectedRoom = new RoomDTO();
+        private string username = string.Empty;
+        private string myMessage = string.Empty;
 
         public MainViewModel(IChatClientService chatService)
         {
@@ -72,28 +73,35 @@ namespace ChatClient.ViewModel
 
         public ObservableCollection<RoomDTO> Rooms
         {
-            get { return _Rooms; }
-            set { Set(ref _Rooms, value); }
+            get { return rooms; }
+            set { Set(ref rooms, value); }
         }
 
         public ObservableCollection<MessageDTO> Messages
         {
-            get { return _messagers; }
-            set { Set(ref _messagers, value); }
+            get { return messagers; }
+            set { Set(ref messagers, value); }
         }
 
         public RoomDTO SelectedRoom
         {
-            get { return _selectedRoom; }
-            set { Set(ref _selectedRoom, value); }
+            get { return selectedRoom; }
+            set { Set(ref selectedRoom, value); }
         }
 
         public string Username
         {
-            get { return _username; }
-            set { Set(ref _username, value); }
+            get { return username; }
+            set { Set(ref username, value); }
         }
 
+        public string MyMessage
+        {
+            get { return myMessage; }
+            set { Set(ref myMessage, value); }
+        }
+
+        public RelayCommand SendMessageCommand => new RelayCommand(SendMessage);
         public RelayCommand AddRoomCommand => new RelayCommand(AddRoom);
         public RelayCommand LoadRoomMessages => new RelayCommand(LoadMessages);
 
@@ -102,9 +110,23 @@ namespace ChatClient.ViewModel
             chatService.chatProxy.Invoke<ObservableCollection<MessageDTO>>("LoadRoomMessages", SelectedRoom.RoomName, Username);
         }
 
+        private void SendMessage()
+        {
+            if (!string.IsNullOrWhiteSpace(MyMessage))
+                chatService.chatProxy.Invoke("SendMessage", SelectedRoom.RoomName, MyMessage, Username);
+        }
+
         private void AddRoom()
         {
-            //TODO add room
+            CreateRoomWindow win = new CreateRoomWindow();
+            win.Show();
+            Messenger.Default.Send(new NotificationMessage<string>(Username, "token"));
+
+            Messenger.Default.Register<NotificationMessage<CreateRoomDTO>>(this, (roomToCreate) =>
+            {
+                chatService.chatProxy.Invoke("CreateRoom", roomToCreate.Content);
+                win.Close();
+            });
         }
     }
 }
@@ -140,7 +162,6 @@ namespace ChatClient.ViewModel
 //        try
 //        {
 //            SelectedRoomDTO = (RoomDTO)Contacts.SelectedItem;
-//            HubProxy.Invoke("SendMessage", SelectedRoomDTO.RoomName, MessageTextBox.Text, username);
 //            ReloadMessageSource();
 //            MessageTextBox.Text = "";
 //        }
@@ -180,16 +201,7 @@ namespace ChatClient.ViewModel
 //        }
 //    }
 
-//    private void AddRoom(object sender, RoutedEventArgs e)
-//    {
-//        var list = HubProxy.Invoke<List<UserDTO>>("LoadUsers", username).Result;
-//        CreateRoomWindow win = new CreateRoomWindow(list, username);
-//        win.ShowDialog();
-//        if (win.DialogResult == true)
-//        {
-//            HubProxy.Invoke("CreateRoom", win.TempRoom);
-//        }
-//    }
+//
 
 //
 //}

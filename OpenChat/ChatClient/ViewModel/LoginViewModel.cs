@@ -65,6 +65,7 @@ namespace OpenChatClient.ViewModel
                     var win = new MainWindow();
                     win.Show();
                     Messenger.Default.Send(new NotificationMessage<string>(Username, "token"));
+                    App.Current.MainWindow.Close();
                 });
             }
             else

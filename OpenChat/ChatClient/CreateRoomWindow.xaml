@@ -11,20 +11,52 @@
         Title="Create new room"
         DataContext="{Binding CreateRoom, Source={StaticResource Locator}}">
 
+    <Window.Resources>
+        <Style x:Key="DataGridCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="8,0,3,0" />
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="4*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="1" Grid.Row="1" Content="Room name:"></Label>
+        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding RoomName}"></TextBox>
+        <Label Grid.Column="1" Grid.Row="3" Content="Avalible users:"></Label>
+        <DataGrid CanUserAddRows="False" Grid.Column="1" Grid.Row="4" AutoGenerateColumns="False" Grid.RowSpan="3" ItemsSource="{Binding AvalibleUsers}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn MinWidth="50" Width="Auto" Header="Include" SortMemberPath="Include">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox Style="{StaticResource DataGridCheckBoxStyle}" IsChecked="{Binding IsSelected}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding Username}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Margin="0 2 0 0" Grid.Column="1" Grid.Row="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button  Content="OK" Margin="0 0 1 0" Command="{Binding CreateRoomCommand}" IsDefault="True" IsCancel="False" ></Button>
+            <Button  Grid.Column="1" Margin="1 0 0 0 " Content="Cancel" IsCancel="True"></Button>
+        </Grid>
     </Grid>
 </Controls:MetroWindow>
