@@ -126,7 +126,7 @@
                     <ColumnDefinition Width="7*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBox VerticalAlignment="Bottom" x:Name="MessageTextBox" Grid.Column="0" Padding="5"></TextBox>
+                <TextBox VerticalAlignment="Bottom" x:Name="MessageTextBox" Grid.Column="0" Padding="5" Text="{Binding MyMessage}"></TextBox>
                 <Button VerticalAlignment="Bottom" x:Name="sendbnn" IsDefault="True" Grid.Column="1" Padding="5" Content="SEND" Command="{Binding SendMessageCommand}" Height="34" Margin="2,0,0,0"></Button>
             </Grid>
         </Grid>
