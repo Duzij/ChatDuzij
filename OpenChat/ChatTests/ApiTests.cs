@@ -2,15 +2,15 @@
 using ChatDuzijCore.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenChat.Communication;
+using OpenChat.Models;
 using OpenChat.Repositories;
+using OpenChatClient.Model;
 
 namespace ChatTests
 {
     [TestClass]
     public class ApiTests
     {
-        public RoomRepository RoomRepository { get; set; }
-        public UserRepository UserRepository { get; set; }
         public ChatHub ChatHub { get; set; }
 
         [TestInitialize]
@@ -20,10 +20,20 @@ namespace ChatTests
         }
 
         [TestMethod]
-        public void AddingRoom()
+        public void WriteMessage()
         {
-            RoomRepository roomRepository = new RoomRepository();
-            roomRepository.AddRoom("TestRoom");
+        }
+
+        /// <summary>
+        /// Unknown user is added anyway
+        /// </summary>
+        [TestMethod]
+        public void LoginUnknownUser()
+        {
+            var countBefore = ChatHub.UserRepository.FindAll().Count;
+            UserDTO user = new UserDTO() { Username = "TestUser" };
+            ChatHub.Login(user.Username, "testPassword");
+            Assert.AreEqual(countBefore++, ChatHub.UserRepository.FindAll().Count);
         }
     }
 }
