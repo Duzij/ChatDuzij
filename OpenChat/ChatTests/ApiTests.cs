@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq;
 using ChatDuzijCore.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenChat.Communication;
 using OpenChat.Models;
 using OpenChat.Repositories;
-using OpenChatClient.Model;
+using OpenChatClient.Models;
 
 namespace ChatTests
 {
@@ -19,9 +20,19 @@ namespace ChatTests
             ChatHub = new ChatHub();
         }
 
+        /// <summary>
+        /// Testing if message is written
+        /// </summary>
         [TestMethod]
         public void WriteMessage()
         {
+            ChatHub.RoomRepository.AddRoom("TestRoom");
+            var messagesBefore = ChatHub.RoomRepository.GetAllMessages("TestRoom").Count;
+            ChatHub.UserRepository.AddUser(new User() { Username = "TestUser", Password = "TestPasword" });
+            ChatHub.RoomRepository.AddRoom("TestName");
+
+            ChatHub.SendMessage("TestRoom", "TestMessage", "TestUser");
+            Assert.Equals(ChatHub.RoomRepository.GetAllMessages("TestRoom").Count, messagesBefore++);
         }
 
         /// <summary>
@@ -34,6 +45,13 @@ namespace ChatTests
             UserDTO user = new UserDTO() { Username = "TestUser" };
             ChatHub.Login(user.Username, "testPassword");
             Assert.AreEqual(countBefore++, ChatHub.UserRepository.FindAll().Count);
+        }
+
+        [TestCleanup]
+        public void RepositoryCleanup()
+        {
+            ChatHub.RoomRepository.DeleteRoom("TestUser");
+            ChatHub.RoomRepository.DeleteRoom("TestRoom");
         }
     }
 }

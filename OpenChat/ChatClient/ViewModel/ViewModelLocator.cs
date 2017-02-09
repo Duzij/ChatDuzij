@@ -12,7 +12,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using ChatClient.Model;
 using OpenChatClient.ViewModel;
 using OpenChatClient;
 

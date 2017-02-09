@@ -247,14 +247,6 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChatDbContext.cs" />
-    <Compile Include="Models\CreateRoomDTO.cs" />
-    <Compile Include="Models\MessageDTO.cs" />
-    <Compile Include="Models\RoomDTO.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\Message.cs" />
-    <Compile Include="Models\Room.cs" />
-    <Compile Include="Models\UserDTO.cs" />
-    <Compile Include="Models\UserIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\RoomRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
@@ -333,6 +325,12 @@
     <EmbeddedResource Include="Migrations\201701262219287_InitialCommit.resx">
       <DependentUpon>201701262219287_InitialCommit.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatModel\ChatModel.csproj">
+      <Project>{3F627BED-63D2-4284-8A28-25AC0DDCF70C}</Project>
+      <Name>ChatModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

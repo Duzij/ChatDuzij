@@ -3,6 +3,7 @@ using ChatDuzijCore.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenChat.Communication;
 using OpenChat.Models;
+using OpenChatClient.Models;
 
 namespace ChatTests
 {

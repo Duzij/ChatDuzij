@@ -108,24 +108,13 @@
       <DependentUpon>CreateRoomWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Design\DesignChatClientSevice.cs" />
-    <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="Model\IChatClientService.cs" />
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MessageAlignConverter.cs" />
-    <Compile Include="Model\Test\DataItem.cs" />
-    <Compile Include="Model\Test\DataService.cs" />
-    <Compile Include="Model\Test\IDataService.cs" />
     <Compile Include="Model\ChatClientService.cs" />
     <Compile Include="Model\ChatDbContext.cs" />
-    <Compile Include="Model\DTOs\CreateRoomDTO.cs" />
-    <Compile Include="Model\Message.cs" />
-    <Compile Include="Model\DTOs\MessageDTO.cs" />
-    <Compile Include="Model\Room.cs" />
-    <Compile Include="Model\DTOs\RoomDTO.cs" />
-    <Compile Include="Model\User.cs" />
-    <Compile Include="Model\DTOs\UserDTO.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -200,6 +189,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\new-messages-icon-small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatModel\ChatModel.csproj">
+      <Project>{3f627bed-63d2-4284-8a28-25ac0ddcf70c}</Project>
+      <Name>ChatModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

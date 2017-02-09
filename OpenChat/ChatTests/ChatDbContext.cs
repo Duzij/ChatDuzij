@@ -4,10 +4,10 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
-using Devtalk.EF.CodeFirst;
+using OpenChat.Models;
 using OpenChatClient.Models;
 
-namespace OpenChat.Models
+namespace ChatModel.Models
 {
     [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
     public class ChatDbContext : DbContext

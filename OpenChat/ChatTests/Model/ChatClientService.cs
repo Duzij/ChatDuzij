@@ -6,12 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
+using ChatClient.Model;
 using OpenChatClient.Models;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Ioc;
 using OpenChatClient;
 
-namespace ChatClient
+namespace OpenChatClient
 {
     public class ChatClientService : IChatClientService
     {

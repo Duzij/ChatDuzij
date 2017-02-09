@@ -9,7 +9,7 @@ using Microsoft.AspNet.SignalR;
 using OpenChat.Models;
 using Microsoft.AspNet.SignalR.Hubs;
 using OpenChat.Repositories;
-using OpenChatClient.Model;
+using OpenChatClient.Models;
 using WebGrease.Css.Extensions;
 
 namespace OpenChat.Communication
@@ -65,7 +65,8 @@ namespace OpenChat.Communication
         public void SendMessage(string RoomName, string message, string user)
         {
             RoomRepository.WriteMessage(message, user, RoomName);
-            Clients.Group(RoomName).Notify(RoomName);
+            if (UserRepository.GetAllIdentities() != null)
+                Clients.Group(RoomName).Notify(RoomName);
         }
 
         public void CreateRoom(CreateRoomDTO room)
