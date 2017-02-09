@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using ChatDuzijCore.Repositories;
 using OpenChat.Models;
+using OpenChatClient.Models;
 
 namespace OpenChat.Repositories
 {

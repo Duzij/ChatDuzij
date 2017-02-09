@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace OpenChat.Models
+namespace OpenChatClient.Models
 {
     public class MessageDTO
     {
+        private bool myMessage;
         public string Text { get; set; }
         public double Timestamp { get; set; }
         public string Author { get; set; }
         public string Room { get; set; }
-        public bool MyMessage = false;
+
+        public virtual bool MyMessage
+        {
+            get { return myMessage; }
+            set { myMessage = value; }
+        }
 
         public static explicit operator MessageDTO(Message m)
         {
@@ -23,6 +29,5 @@ namespace OpenChat.Models
                 Timestamp = m.Timestamp
             };
         }
-
     }
 }

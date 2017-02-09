@@ -4,10 +4,8 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
-using Devtalk.EF.CodeFirst;
-using OpenChatClient.Models;
 
-namespace OpenChat.Models
+namespace OpenChatClient.Models
 {
     [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
     public class ChatDbContext : DbContext
@@ -17,7 +15,6 @@ namespace OpenChat.Models
             Database.SetInitializer(new DropCreateDatabaseAlways<DbContext>());
         }
 
-        public DbSet<UserIdentity> ConnectedUsers { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Room> Rooms { get; set; }
 

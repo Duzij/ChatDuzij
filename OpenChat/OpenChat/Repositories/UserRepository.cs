@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using OpenChat.Models;
+using OpenChatClient.Models;
+using ChatDbContext = OpenChat.Models.ChatDbContext;
 
 namespace ChatDuzijCore.Repositories
 {
@@ -13,6 +15,11 @@ namespace ChatDuzijCore.Repositories
         public bool Exist(string username)
         {
             return Context.Users.Any(a => a.Username == username);
+        }
+
+        public List<UserIdentity> GetAllIdentities()
+        {
+            return Context.ConnectedUsers?.ToList();
         }
 
         public User Find(string name)

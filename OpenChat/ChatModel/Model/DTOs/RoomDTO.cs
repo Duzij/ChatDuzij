@@ -1,10 +1,9 @@
-﻿using OpenChat.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace OpenChatClient.Model
+namespace OpenChatClient.Models
 {
     public class RoomDTO
     {
@@ -15,6 +14,5 @@ namespace OpenChatClient.Model
         {
             return new RoomDTO() { RoomName = r.RoomName, GotNewMessages = false };
         }
-
     }
 }

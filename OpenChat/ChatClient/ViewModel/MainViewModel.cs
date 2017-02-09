@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using ChatClient.Model;
 using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
