@@ -72,12 +72,11 @@ namespace OpenChat.Communication
         public void CreateRoom(CreateRoomDTO room)
         {
             var roomName = room.Name;
-            var addedUsers = room.Users;
             if (RoomRepository.Find(roomName) == null)
             {
                 RoomRepository.AddRoom(roomName);
 
-                foreach (var user in addedUsers)
+                foreach (var user in room.Users)
                 {
                     RoomRepository.JoinRoom(user, roomName);
 

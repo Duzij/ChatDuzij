@@ -62,14 +62,15 @@ namespace ChatClient.ViewModel
 
         private void CreateRoom()
         {
-            var list = avalibleUsers.Where(a => a.IsSelected).Select(b => b.Username).ToList();
-            list.Add(Username);
+            var list = AvalibleUsers.Where(a => a.IsSelected).Select(b => b.Username).ToList();
+
+            App.Current.MainWindow.Close();
 
             Messenger.Default.Send(new NotificationMessage<CreateRoomDTO>(new CreateRoomDTO()
             {
                 Name = RoomName,
                 Users = list
-            }, "CrateRoomToken"));
+            }, "createRoomToken"));
         }
     }
 }
