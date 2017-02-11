@@ -20,30 +20,43 @@ namespace OpenChat.Communication
         public UserRepository UserRepository = new UserRepository();
         public RoomRepository RoomRepository = new RoomRepository();
 
-        public ChatHub()
-        {
-        }
-
+        /// <summary>
+        /// Removes username from database table, where all online users are
+        /// </summary>
+        /// <param name="stopCalled"></param>
+        /// <returns></returns>
         public override Task OnDisconnected(bool stopCalled)
         {
             if (stopCalled)
                 this.UserRepository.RemoveIndentity(this.Context.ConnectionId);
-            else
-            {
-            }
             return base.OnDisconnected(stopCalled);
         }
 
+        /// <summary>
+        /// Returns user contacts by username.
+        /// </summary>
+        /// <param name="usename"></param>
+        /// <returns></returns>
         public List<UserDTO> LoadUsers(string usename)
         {
             return UserRepository.FindAll().ConvertAll(a => (UserDTO)a);
         }
 
+        /// <summary>
+        /// Returns user rooms by username.
+        /// </summary>
+        /// <param name="username"></param>
         public void LoadRooms(string username)
         {
             Clients.Caller.LoadRooms(RoomRepository.FindAllUserRooms(username).ConvertAll(a => (RoomDTO)a));
         }
 
+        /// <summary>
+        /// Load messages and by authorName marks every message if usernames are same.
+        /// This mark is userd for aligning messages by converter.
+        /// </summary>
+        /// <param name="roomName"></param>
+        /// <param name="authorName"></param>
         public void LoadRoomMessages(string roomName, string authorName)
         {
             List<MessageDTO> output = new List<MessageDTO>();
@@ -62,6 +75,12 @@ namespace OpenChat.Communication
             Clients.Caller.LoadRoomMessages(output);
         }
 
+        /// <summary>
+        /// Message is added to database and notify all online users.
+        /// </summary>
+        /// <param name="RoomName"></param>
+        /// <param name="message"></param>
+        /// <param name="user"></param>
         public void SendMessage(string RoomName, string message, string user)
         {
             RoomRepository.WriteMessage(message, user, RoomName);
@@ -69,6 +88,10 @@ namespace OpenChat.Communication
                 Clients.Group(RoomName).Notify(RoomName);
         }
 
+        /// <summary>
+        /// Room is added to database by DTO and reloades room list for all online users
+        /// </summary>
+        /// <param name="room"></param>
         public void CreateRoom(CreateRoomDTO room)
         {
             var roomName = room.Name;
@@ -89,21 +112,28 @@ namespace OpenChat.Communication
             }
         }
 
+        /// <summary>
+        /// For all uses, which are online, signalR creates groups
+        /// </summary>
+        /// <param name="roomName"></param>
+        /// <param name="username"></param>
         public void JoinRoom(string roomName, string username)
         {
-            //what meens, he is online
             Groups.Add(UserRepository.GetUserConnectionByUsername(username), roomName);
         }
 
+        /// <summary>
+        /// This method provides basic login
+        /// If username isnt found, new user is created.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
         public void Login(string username, string password)
         {
             if (!UserRepository.IsUserConnected(username) && UserRepository.Exist(username))
             {
                 if (UserRepository.LoginUser(username, password) == "404")
-                {
-                    //register a new user instantly
                     UserRepository.AddUser(new User(username, password));
-                }
 
                 UserRepository.AddIdentity(username, Context.ConnectionId);
 

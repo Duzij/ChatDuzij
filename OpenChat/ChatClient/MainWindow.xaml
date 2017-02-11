@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:ChatClient"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:ignore="http://www.galasoft.ch/ignore"
-        xmlns:viewModel="clr-namespace:ChatClient.ViewModel"
         mc:Ignorable="d ignore"
         Title="OpenChat Client" Height="500" Width="700"
         DataContext="{Binding Main, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen">

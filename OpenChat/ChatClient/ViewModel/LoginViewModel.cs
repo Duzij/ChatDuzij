@@ -22,6 +22,7 @@ namespace OpenChatClient.ViewModel
         private readonly IChatClientService init;
         private string _username;
         private string _password;
+        private string _errorLabel = string.Empty;
 
         public LoginViewModel(IChatClientService service)
         {
@@ -40,6 +41,12 @@ namespace OpenChatClient.ViewModel
         {
             get { return _password; }
             set { _password = value; }
+        }
+
+        public string ErrorLabel
+        {
+            get { return _errorLabel; }
+            set { Set(ref _errorLabel, value); }
         }
 
         public RelayCommand<object> LoginCommand => new RelayCommand<object>(OnLoginCommand);
@@ -70,7 +77,7 @@ namespace OpenChatClient.ViewModel
             }
             else
             {
-                //todo validation label
+                ErrorLabel = "User already loged in";
             }
         }
     }
