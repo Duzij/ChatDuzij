@@ -24,7 +24,7 @@ namespace ChatClient.ViewModel
         private readonly IChatClientService chatService;
         private ObservableCollection<MessageDTO> messagers = new ObservableCollection<MessageDTO>();
         private ObservableCollection<RoomDTO> rooms = new ObservableCollection<RoomDTO>();
-        private RoomDTO selectedRoom = new RoomDTO();
+        private RoomDTO selectedRoom;
         private string username = string.Empty;
         private string myMessage = string.Empty;
 
@@ -116,8 +116,11 @@ namespace ChatClient.ViewModel
 
         private void SendMessage()
         {
-            if (!string.IsNullOrWhiteSpace(MyMessage))
+            if (!string.IsNullOrWhiteSpace(MyMessage) && SelectedRoom != null)
+            {
                 chatService.chatProxy.Invoke("SendMessage", SelectedRoom.RoomName, MyMessage, Username);
+                MyMessage = "";
+            }
         }
 
         private void AddRoom()
