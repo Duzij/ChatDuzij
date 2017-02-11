@@ -38,6 +38,11 @@ namespace ChatClient.ViewModel
                 chatService.chatProxy.Invoke("LoadRooms", Username);
             });
 
+            Messenger.Default.Register<NotificationMessage<CreateRoomDTO>>(this, (roomToCreate) =>
+            {
+                chatService.chatProxy.Invoke("CreateRoom", roomToCreate.Content);
+            });
+
             chatService.chatProxy.On("ReLoadRooms", (valid) =>
             {
                 chatService.chatProxy.Invoke<List<RoomDTO>>("LoadRooms", Username);
@@ -117,15 +122,10 @@ namespace ChatClient.ViewModel
 
         private void AddRoom()
         {
-            CreateRoomWindow win = new CreateRoomWindow();
-            win.Show();
+            var win = new CreateRoomWindow();
             Messenger.Default.Send(new NotificationMessage<string>(Username, "token"));
 
-            Messenger.Default.Register<NotificationMessage<CreateRoomDTO>>(this, (roomToCreate) =>
-            {
-                chatService.chatProxy.Invoke("CreateRoom", roomToCreate.Content);
-                win.Close();
-            });
+            win.Show();
         }
     }
 }
