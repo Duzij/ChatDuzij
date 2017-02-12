@@ -43,6 +43,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.1\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
       <Private>True</Private>
@@ -89,7 +93,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ApiTests.cs" />
     <Compile Include="ChatDbContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,6 +100,10 @@
     <Compile Include="UserRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ChatClient\ChatClient.csproj">
+      <Project>{ACB006BA-2838-4770-B7C4-33BBDBBA8954}</Project>
+      <Name>ChatClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChatModel\ChatModel.csproj">
       <Project>{3f627bed-63d2-4284-8a28-25ac0ddcf70c}</Project>
       <Name>ChatModel</Name>
