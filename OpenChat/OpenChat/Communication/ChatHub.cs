@@ -84,7 +84,7 @@ namespace OpenChat.Communication
         public void SendMessage(string RoomName, string message, string user)
         {
             RoomRepository.WriteMessage(message, user, RoomName);
-            if (UserRepository.GetAllIdentities() != null)
+            if (UserRepository.GetAllIdentities().Count != 0)
                 Clients.Group(RoomName).Notify(RoomName);
         }
 
@@ -130,6 +130,7 @@ namespace OpenChat.Communication
         /// <param name="password"></param>
         public void Login(string username, string password)
         {
+            Clients.All.Send(username + " " + Context.ConnectionId);
             if (!UserRepository.IsUserConnected(username) && UserRepository.Exist(username))
             {
                 if (UserRepository.LoginUser(username, password) == "404")

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using ChatDuzijCore.Repositories;
@@ -31,7 +32,11 @@ namespace OpenChat.Repositories
         public void DeleteRoom(string name)
         {
             var room = this.Find(name);
-            this.Context.Rooms.Remove(room);
+            if (room != null)
+            {
+                this.Context.Rooms.Remove(room);
+            }
+
             this.Context.SaveChanges();
         }
 
@@ -46,8 +51,15 @@ namespace OpenChat.Repositories
         public void WriteMessage(string message, string authorName, string roomName)
         {
             var msg = new Message() { Author = authorName, Room = authorName, Text = message };
-            var room = Context.Rooms.Where(a => a.RoomName == roomName).First();
+            var room = Context.Rooms.First(a => a.RoomName == roomName);
             room.Messages.Add(msg);
+            this.Context.SaveChanges();
+        }
+
+        public void DeleteMessage(Message msg, string roomName)
+        {
+            var room = Context.Rooms.First(a => a.RoomName == roomName);
+            room.Messages.Remove(msg);
             this.Context.SaveChanges();
         }
 
