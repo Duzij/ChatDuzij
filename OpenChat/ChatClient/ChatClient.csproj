@@ -108,13 +108,15 @@
       <DependentUpon>CreateRoomWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Design\DesignChatClientSevice.cs" />
+    <Compile Include="Converters\MessageHorizontalConverter.cs" />
     <Compile Include="Model\IChatClientService.cs" />
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MessageAlignConverter.cs" />
+    <Compile Include="Converters\MessageAlignConverter.cs" />
     <Compile Include="Model\ChatClientService.cs" />
     <Compile Include="Model\ChatDbContext.cs" />
+    <Compile Include="Converters\PrecentaceConverter.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
