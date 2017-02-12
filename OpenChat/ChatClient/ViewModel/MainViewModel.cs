@@ -25,8 +25,8 @@ namespace ChatClient.ViewModel
         private ObservableCollection<MessageDTO> messagers = new ObservableCollection<MessageDTO>();
         private ObservableCollection<RoomDTO> rooms = new ObservableCollection<RoomDTO>();
         private RoomDTO selectedRoom;
-        private string username = string.Empty;
-        private string myMessage = string.Empty;
+        private string username;
+        private string myMessage;
 
         public MainViewModel(IChatClientService chatService)
         {
