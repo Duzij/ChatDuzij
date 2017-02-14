@@ -57,7 +57,7 @@ namespace OpenChatClient.ViewModel
             {
                 await init.chatProxy.Invoke("Login", Username, ((PasswordBox)commandParameter).Password);
             }
-            catch (NullReferenceException ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }

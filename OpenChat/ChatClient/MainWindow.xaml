@@ -9,7 +9,7 @@
         BorderBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
         mc:Ignorable="d ignore"
-        Title="OpenChat Client" MaxHeight="500" MaxWidth="700"
+        Title="OpenChat Client" MinHeight="500" MinWidth="700"
         DataContext="{Binding Main, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
