@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat", "OpenChat\OpenChat.csproj", "{FF9F17FF-9A17-441F-B67E-F17A71336D1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.Server", "OpenChat\OpenChat.Server.csproj", "{FF9F17FF-9A17-441F-B67E-F17A71336D1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatClient", "ChatClient\ChatClient.csproj", "{ACB006BA-2838-4770-B7C4-33BBDBBA8954}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.Client", "ChatClient\OpenChat.Client.csproj", "{ACB006BA-2838-4770-B7C4-33BBDBBA8954}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatTests", "ChatTests\ChatTests.csproj", "{BD94E7C1-AA8E-45FA-92D7-C5DBD653653D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.Tests", "ChatTests\OpenChat.Tests.csproj", "{BD94E7C1-AA8E-45FA-92D7-C5DBD653653D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatModel", "ChatModel\ChatModel.csproj", "{3F627BED-63D2-4284-8A28-25AC0DDCF70C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.Model", "ChatModel\OpenChat.Model.csproj", "{3F627BED-63D2-4284-8A28-25AC0DDCF70C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

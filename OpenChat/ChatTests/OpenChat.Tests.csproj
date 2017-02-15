@@ -6,8 +6,8 @@
     <ProjectGuid>{BD94E7C1-AA8E-45FA-92D7-C5DBD653653D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChatTests</RootNamespace>
-    <AssemblyName>ChatTests</AssemblyName>
+    <RootNamespace>OpenChat.Tests</RootNamespace>
+    <AssemblyName>OpenChat.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -100,17 +100,17 @@
     <Compile Include="UserRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChatClient\ChatClient.csproj">
+    <ProjectReference Include="..\ChatClient\OpenChat.Client.csproj">
       <Project>{ACB006BA-2838-4770-B7C4-33BBDBBA8954}</Project>
-      <Name>ChatClient</Name>
+      <Name>OpenChat.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChatModel\ChatModel.csproj">
+    <ProjectReference Include="..\ChatModel\OpenChat.Model.csproj">
       <Project>{3f627bed-63d2-4284-8a28-25ac0ddcf70c}</Project>
-      <Name>ChatModel</Name>
+      <Name>OpenChat.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenChat\OpenChat.csproj">
+    <ProjectReference Include="..\OpenChat\OpenChat.Server.csproj">
       <Project>{ff9f17ff-9a17-441f-b67e-f17a71336d1e}</Project>
-      <Name>OpenChat</Name>
+      <Name>OpenChat.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

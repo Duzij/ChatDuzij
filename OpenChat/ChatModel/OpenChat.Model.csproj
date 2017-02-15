@@ -7,8 +7,8 @@
     <ProjectGuid>{3F627BED-63D2-4284-8A28-25AC0DDCF70C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChatModel</RootNamespace>
-    <AssemblyName>ChatModel</AssemblyName>
+    <RootNamespace>OpenChat.Model</RootNamespace>
+    <AssemblyName>OpenChat.Model</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
