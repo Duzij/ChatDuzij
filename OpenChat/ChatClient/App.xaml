@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ignore="http://www.galasoft.ch/ignore"
              StartupUri="LoginWindow.xaml"
-             mc:Ignorable="d ignore">
+             mc:Ignorable="d ignore"  DispatcherUnhandledException="Application_DispatcherUnhandledException">
 
     <Application.Resources>
         <ResourceDictionary>

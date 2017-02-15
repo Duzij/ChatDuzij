@@ -33,8 +33,8 @@ namespace ChatClient
         private void Contacts_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var viewModel = (MainViewModel)DataContext;
-            if (viewModel.LoadRoomMessages.CanExecute(null))
-                viewModel.LoadRoomMessages.Execute(null);
+            if (viewModel.LoadRoomMessagesCommand.CanExecute(null))
+                viewModel.LoadRoomMessagesCommand.Execute(null);
         }
     }
 }

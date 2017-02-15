@@ -48,6 +48,14 @@ namespace ChatClient.ViewModel
                 chatService.chatProxy.Invoke<List<RoomDTO>>("LoadRooms", Username);
             });
 
+            chatService.chatProxy.On("LeaveRoom", (roomName) =>
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Rooms.Remove(Rooms.Where(a => a.RoomName == roomName).FirstOrDefault());
+                });
+            });
+
             chatService.chatProxy.On("Notify", (string RoomDTOName) =>
             {
                 var room = Rooms.First(a => a.RoomName == RoomDTOName);
@@ -107,7 +115,13 @@ namespace ChatClient.ViewModel
 
         public RelayCommand SendMessageCommand => new RelayCommand(SendMessage);
         public RelayCommand AddRoomCommand => new RelayCommand(AddRoom);
-        public RelayCommand LoadRoomMessages => new RelayCommand(LoadMessages);
+        public RelayCommand LoadRoomMessagesCommand => new RelayCommand(LoadMessages);
+        public RelayCommand LeaveRoomCommand => new RelayCommand(LeaveRoom);
+
+        private void LeaveRoom()
+        {
+            chatService.chatProxy.Invoke("LeaveRoom", SelectedRoom.RoomName, Username);
+        }
 
         public void LoadMessages()
         {
@@ -127,7 +141,6 @@ namespace ChatClient.ViewModel
         {
             var win = new CreateRoomWindow();
             Messenger.Default.Send(new NotificationMessage<string>(Username, "token"));
-
             win.Show();
         }
     }

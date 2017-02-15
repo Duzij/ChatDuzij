@@ -76,6 +76,17 @@ namespace OpenChat.Communication
         }
 
         /// <summary>
+        /// Removes user from room and notify him
+        /// </summary>
+        /// <param name="roomName"></param>
+        /// <param name="userName"></param>
+        public void LeaveRoom(string roomName, string userName)
+        {
+            this.RoomRepository.LeaveRoom(roomName, userName);
+            Clients.Caller.LeaveRoom(roomName);
+        }
+
+        /// <summary>
         /// Message is added to database and notify all online users.
         /// </summary>
         /// <param name="RoomName"></param>

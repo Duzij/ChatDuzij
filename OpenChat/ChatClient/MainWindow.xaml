@@ -9,7 +9,7 @@
         BorderBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
         mc:Ignorable="d ignore"
-        Title="OpenChat Client" MaxHeight="500" MaxWidth="700"
+        Title="OpenChat Client" MinHeight="500" MinWidth="700"
         DataContext="{Binding Main, Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -27,6 +27,7 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -35,7 +36,7 @@
 
         <Label Content="ROOMS" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom"></Label>
 
-        <ListView BorderThickness="1 0 0 0" BorderBrush="{StaticResource AccentColorBrush}" Margin="5 5 0 5" Padding="0 0 10 0" MouseDoubleClick="Contacts_OnMouseDoubleClick" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Rooms, Mode=OneWay}" SelectedItem="{Binding SelectedRoom, Mode=TwoWay}">
+        <ListView x:Name="RoomsView" BorderThickness="1 0 0 0" BorderBrush="{StaticResource AccentColorBrush}" Margin="5 5 0 5" Padding="0 0 10 0" MouseDoubleClick="Contacts_OnMouseDoubleClick" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Rooms, Mode=OneWay}" SelectedItem="{Binding SelectedRoom, Mode=TwoWay}">
             <ListView.View>
                 <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeader}" AllowsColumnReorder="False">
                     <GridView.Columns>
@@ -48,6 +49,7 @@
                                         </StackPanel.InputBindings>
                                         <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
                                         <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Resources/new-messages-icon-small.png"></Image>
+
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -57,11 +59,17 @@
             </ListView.View>
         </ListView>
 
-        <Button MaxHeight="34" Margin="5" Content="Add room" Grid.Column="1" Grid.Row="2" Command="{Binding AddRoomCommand}"></Button>
+        <Button Name="LeaveButton" MaxHeight="34" Margin="5" IsEnabled="{Binding SelectedRoom, TargetNullValue=False}"
+                Grid.Column="1"
+                Grid.Row="2"
+                Command="{Binding LeaveRoomCommand}" Content="Leave">
+        </Button>
 
-        <Label Margin="5" Grid.Row="0" Content="{Binding Username}"></Label>
+        <Button MaxHeight="34" Margin="5" Content="Add room" Grid.Column="1" Grid.Row="3" Command="{Binding AddRoomCommand}"></Button>
 
-        <ListView Padding="10" Grid.Row="1" ItemsSource="{Binding Messages}" Margin="5" x:Name="ChatView" Foreground="#FF040404" BorderBrush="White">
+        <Label Margin="5" Grid.Row="0" Grid.Column="0" Content="{Binding Username}"></Label>
+
+        <ListView Padding="10" Grid.RowSpan="3" ItemsSource="{Binding Messages}" Margin="5" x:Name="ChatView" Foreground="#FF040404" BorderBrush="White">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Style.Resources>
@@ -113,7 +121,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Grid Margin="5" Grid.Column="0" Grid.Row="2">
+        <Grid Margin="5" Grid.Column="0" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>

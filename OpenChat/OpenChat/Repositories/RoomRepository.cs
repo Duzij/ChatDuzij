@@ -29,6 +29,13 @@ namespace OpenChat.Repositories
             this.Context.SaveChanges();
         }
 
+        public void LeaveRoom(string roomName, string username)
+        {
+            var room = this.Context.Rooms.Where(a => a.RoomName == roomName).FirstOrDefault();
+            this.Context.Users.Where(a => a.Username == username).FirstOrDefault().Rooms.Remove(room);
+            this.Context.SaveChanges();
+        }
+
         public void DeleteRoom(string name)
         {
             var room = this.Find(name);

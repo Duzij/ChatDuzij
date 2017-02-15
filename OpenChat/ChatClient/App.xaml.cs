@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight.Threading;
+using ChatClient.ViewModel;
 
 namespace ChatClient
 {
@@ -11,6 +12,10 @@ namespace ChatClient
         static App()
         {
             DispatcherHelper.Initialize();
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
         }
     }
 }

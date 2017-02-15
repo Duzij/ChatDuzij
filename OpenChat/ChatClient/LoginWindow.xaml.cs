@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using ChatClient.ViewModel;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace OpenChatClient
         public LoginWindow()
         {
             InitializeComponent();
+            Closing += (s, e) => ViewModelLocator.Cleanup();
         }
     }
 }
