@@ -53,6 +53,7 @@ namespace ChatClient.ViewModel
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
                     Rooms.Remove(Rooms.Where(a => a.RoomName == roomName).FirstOrDefault());
+                    Messages = null;
                 });
             });
 
@@ -81,6 +82,7 @@ namespace ChatClient.ViewModel
             {
                 Rooms = new ObservableCollection<RoomDTO>(rooms);
             });
+
         }
 
         public ObservableCollection<RoomDTO> Rooms
@@ -139,9 +141,8 @@ namespace ChatClient.ViewModel
 
         private void AddRoom()
         {
-            var win = new CreateRoomWindow();
+            Messenger.Default.Send(new NotificationMessage("ShowCreateRoomView"));
             Messenger.Default.Send(new NotificationMessage<string>(Username, "token"));
-            win.Show();
         }
     }
 }

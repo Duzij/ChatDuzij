@@ -14,8 +14,5 @@ namespace ChatClient
             DispatcherHelper.Initialize();
         }
 
-        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-        }
     }
 }

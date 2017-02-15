@@ -24,7 +24,6 @@ namespace OpenChatClient
         public LoginWindow()
         {
             InitializeComponent();
-            Closing += (s, e) => ViewModelLocator.Cleanup();
         }
     }
 }

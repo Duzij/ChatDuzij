@@ -1,7 +1,9 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Input;
 using ChatClient.ViewModel;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace ChatClient
 {
@@ -19,6 +21,17 @@ namespace ChatClient
             Closing += (s, e) => ViewModelLocator.Cleanup();
 
             ((INotifyCollectionChanged)ChatView.Items).CollectionChanged += new NotifyCollectionChangedEventHandler(ChatViewSourceChanged);
+
+            Messenger.Default.Register<NotificationMessage>(this, CreateRoomViewModelMessage);
+        }
+
+        private void CreateRoomViewModelMessage(NotificationMessage msg)
+        {
+            if (msg.Notification == "ShowCreateRoomView")
+            {
+                var CreateRoom = new CreateRoomWindow();
+                CreateRoom.Show();
+            }
         }
 
         private void ChatViewSourceChanged(object sender, NotifyCollectionChangedEventArgs e)

@@ -19,16 +19,16 @@ namespace OpenChatClient.ViewModel
 {
     public class LoginViewModel : ViewModelBase
     {
-        private readonly IChatClientService init;
+        private readonly IChatClientService chatSerivce;
         private string _username;
         private string _password;
         private string _errorLabel = string.Empty;
 
         public LoginViewModel(IChatClientService service)
         {
-            init = service;
-            init.chatProxy.On("Login", (valid) => { this.Login(valid); });
-            init.connection.Start();
+            chatSerivce = service;
+            chatSerivce.chatProxy.On("Login", (valid) => { this.Login(valid); });
+            chatSerivce.connection.Start();
         }
 
         public string Username
@@ -55,7 +55,7 @@ namespace OpenChatClient.ViewModel
         {
             try
             {
-                await init.chatProxy.Invoke("Login", Username, ((PasswordBox)commandParameter).Password);
+                await chatSerivce.chatProxy.Invoke("Login", Username, ((PasswordBox)commandParameter).Password);
             }
             catch (NullReferenceException ex)
             {

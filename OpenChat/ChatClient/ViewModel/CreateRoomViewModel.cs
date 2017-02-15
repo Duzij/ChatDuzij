@@ -22,6 +22,7 @@ namespace ChatClient.ViewModel
         public CreateRoomViewModel(IChatClientService chatService)
         {
             ChatService = chatService;
+            chatService.connection.Start();
 
             Messenger.Default.Register<NotificationMessage<string>>(this, (usernameMsg) =>
             {
@@ -30,9 +31,17 @@ namespace ChatClient.ViewModel
             });
 
             AvalibleUsers = new ObservableCollection<UserDTO>(chatService.chatProxy.Invoke<List<UserDTO>>("LoadUsers", Username).Result);
+
         }
 
         public RelayCommand CreateRoomCommand => new RelayCommand(CreateRoom);
+
+        public RelayCommand CloseWinCommand => new RelayCommand(CloseWin);
+
+        private void CloseWin()
+        {
+            App.Current.MainWindow.Close();
+        }
 
         public IChatClientService ChatService { get; set; }
 
