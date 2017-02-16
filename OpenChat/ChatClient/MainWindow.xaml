@@ -48,8 +48,7 @@
                                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding LoadRoomMessages}"></MouseBinding>
                                         </StackPanel.InputBindings>
                                         <TextBlock Text="{Binding RoomName}" Margin="0 4 10 4" VerticalAlignment="Center" />
-                                        <Image Height="12" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Resources/new-messages-icon-small.png"></Image>
-
+                                        <Image Height="10" Visibility="{Binding GotNewMessages, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Right" Source="Resources/new-messages-icon-small.png"></Image>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -116,7 +115,7 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock MaxWidth="{Binding ActualWidth, ElementName=ChatView, Converter={StaticResource PercentageConverter}, ConverterParameter='0.5'}" TextWrapping="Wrap" HorizontalAlignment="{Binding MyMessage, Converter={StaticResource MsgHorizontal}}" TextAlignment="{Binding MyMessage, Converter={StaticResource MsgAlign}}" Text="{Binding Text}" Margin="0 4 10 4" />
+                    <TextBlock MaxWidth="{Binding ActualWidth, ElementName=ChatView, Converter={StaticResource PercentageConverter}, ConverterParameter='0.5'}" TextWrapping="Wrap" HorizontalAlignment="{Binding MyMessage, Converter={StaticResource MsgHorizontal}}" Text="{Binding Text}" Margin="0 4 10 4" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

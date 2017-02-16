@@ -59,14 +59,13 @@ namespace ChatClient.ViewModel
 
             chatService.chatProxy.On("Notify", (string RoomDTOName) =>
             {
-                var room = Rooms.First(a => a.RoomName == RoomDTOName);
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    room.GotNewMessages = true;
-                    if (SelectedRoom.RoomName == RoomDTOName)
-                    {
+                    if (SelectedRoom != null)
                         LoadMessages();
-                    }
+
+                    if (SelectedRoom.RoomName != RoomDTOName)
+                        Rooms.First(a => a.RoomName == RoomDTOName).GotNewMessages = true;
                 });
             });
 
@@ -128,6 +127,7 @@ namespace ChatClient.ViewModel
         public void LoadMessages()
         {
             chatService.chatProxy.Invoke<ObservableCollection<MessageDTO>>("LoadRoomMessages", SelectedRoom.RoomName, Username);
+            Rooms.First(r => r.GotNewMessages == false);
         }
 
         private void SendMessage()
