@@ -45,6 +45,8 @@ namespace ChatClient
                 //client-side logging
                 connection.TraceLevel = TraceLevels.All;
                 connection.TraceWriter = Console.Out;
+
+                connection.Error += ex => MessageBox.Show("SignalR error: {0}", ex.Message);
             }
             catch (NullReferenceException ex)
             {
